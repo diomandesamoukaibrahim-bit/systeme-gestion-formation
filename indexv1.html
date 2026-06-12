@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANARE-CI — Évaluations des Formations 2025</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --navy: #0d1b2a;
+    --navy-2: #1a2e45;
+    --navy-3: #243d5a;
+    --navy-light: #e8eef5;
+    --navy-xlight: #f4f7fa;
+    --accent: #1e4d8c;
+    --accent-light: #d6e4f7;
+    --white: #ffffff;
+    --border: #c8d6e8;
+    --text: #0d1b2a;
+    --text-muted: #4a6380;
+    --text-light: #7a96b2;
+    --success: #166534;
+    --success-bg: #dcfce7;
+    --warning: #854f0b;
+    --warning-bg: #fef3c7;
+    --danger: #991b1b;
+    --danger-bg: #fee2e2;
+    --radius: 6px;
+    --shadow: 0 1px 3px rgba(13,27,42,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Aptos', 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--navy-xlight);
+    min-height: 100vh;
+  }
+
+  /* === HEADER === */
+  .app-header {
+    background: var(--navy);
+    color: white;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .header-logo {
+    width: 40px; height: 40px;
+    background: white;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: var(--navy);
+    letter-spacing: -0.5px; line-height: 1.1; text-align: center;
+  }
+  .header-title { font-size: 15px; font-weight: 600; color: white; }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 1px; }
+  .header-year {
+    background: var(--accent);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .header-logo-img { height: 42px; width: auto; border-radius: 4px; background: white; padding: 3px 6px; }
+  .year-select {
+    background: var(--accent);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-family: 'Aptos', sans-serif;
+    cursor: pointer;
+  }
+  .year-select option { color: var(--navy); }
+
+  /* === COLLABORATEURS === */
+  .agents-toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .agents-toolbar input[type="text"] { flex:1; min-width:220px; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); font-family:'Aptos',sans-serif; font-size:13px; }
+  .agent-tag-custom { background:#fef3c7; color:#854f0b; font-size:10px; padding:2px 6px; border-radius:8px; font-weight:700; margin-left:6px; }
+
+  /* === SYNTH PARTICIPANTS === */
+  .synth-part-table { width:100%; border-collapse: collapse; font-size:12px; min-width:900px; }
+  .synth-part-table th { background:var(--navy); color:white; padding:9px 10px; font-size:10px; font-weight:600; text-align:center; text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap; }
+  .synth-part-table th:first-child, .synth-part-table th:nth-child(2) { text-align:left; }
+  .synth-part-table td { padding:8px 10px; border-bottom:1px solid var(--navy-light); text-align:center; white-space:nowrap; }
+  .synth-part-table td:first-child, .synth-part-table td:nth-child(2) { text-align:left; }
+  .synth-part-table tr:hover td { background: var(--navy-xlight); }
+  .synth-part-table td.gen-avg { font-weight:700; background:#f0f6ff; }
+
+  /* === NAVIGATION === */
+  .app-nav {
+    background: var(--navy-2);
+    display: flex;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--navy-3);
+    overflow-x: auto;
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    padding: 14px 20px;
+    font-size: 13px;
+    font-family: 'Aptos', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: rgba(255,255,255,0.85); }
+  .nav-btn.active { color: white; border-bottom-color: #4d9de0; }
+
+  /* === LAYOUT === */
+  .app-content { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+  /* === PAGES === */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* === PAGE TITLE === */
+  .page-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  /* === CARDS === */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--navy-light);
+  }
+
+  /* === STAT CARDS === */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    border-left: 4px solid var(--accent);
+  }
+  .stat-card.success { border-left-color: #166534; }
+  .stat-card.warning { border-left-color: #b45309; }
+  .stat-card.danger { border-left-color: #991b1b; }
+  .stat-card.info { border-left-color: #1e4d8c; }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+  /* === FORMATION INFO === */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(30,77,140,0.1);
+  }
+  .form-group.span-2 { grid-column: 1 / -1; }
+
+  /* === SELECTOR FORMATION === */
+  .formation-selector {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+  }
+  .formation-selector label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  .formation-selector select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 13px;
+    background: var(--white);
+  }
+  .btn-new {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-new:hover { background: var(--navy-2); }
+  .btn-secondary {
+    background: white;
+    color: var(--navy);
+    border: 1px solid var(--border);
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-secondary:hover { background: var(--navy-xlight); }
+  .btn-danger {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid #fca5a5;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .btn-success {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 9px 22px;
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-success:hover { background: var(--accent); }
+
+  /* === TABLE === */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+  th {
+    background: var(--navy);
+    color: white;
+    padding: 11px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  th:first-child { text-align: left; border-radius: 0; }
+  th.col-wide { min-width: 180px; }
+  th.col-info { background: var(--navy-3); }
+  th.col-note { background: #1a3a6b; }
+  th.col-auto { background: #0f2a50; }
+  td {
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--navy-light);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  td.td-info { background: #f0f6ff; color: var(--navy); font-weight: 500; }
+  td.td-num { text-align: center; }
+  tr:hover td { background: var(--navy-xlight); }
+  tr:hover td.td-info { background: #e4eeff; }
+
+  .note-input {
+    width: 65px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 13px;
+    font-family: 'Aptos', sans-serif;
+    font-weight: 600;
+    background: #fffde7;
+    color: var(--navy);
+    transition: border-color 0.2s;
+  }
+  .note-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(30,77,140,0.15); }
+  .note-input.invalid { border-color: #ef4444; background: #fff5f5; }
+
+  .note-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 44px;
+    text-align: center;
+  }
+  .note-4 { background: #dcfce7; color: #166534; }
+  .note-3 { background: #dbeafe; color: #1e40af; }
+  .note-2 { background: #fef3c7; color: #854f0b; }
+  .note-1 { background: #fee2e2; color: #991b1b; }
+  .note-0 { background: #f1f5f9; color: #64748b; }
+
+  .text-input {
+    width: 100%;
+    min-width: 140px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Aptos', sans-serif;
+    background: #f8f9fe;
+    color: var(--text);
+    resize: none;
+  }
+  .text-input:focus { outline: none; border-color: var(--accent); }
+  .text-input-wide { min-width: 260px; }
+
+  .matricule-input {
+    width: 90px;
+    padding: 7px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Aptos', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #fffde7;
+    color: var(--navy);
+  }
+  .matricule-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(30,77,140,0.15); }
+
+  .no-match { color: #ef4444; font-size: 11px; }
+
+  /* === LEGEND === */
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    background: var(--navy-xlight);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    margin-bottom: 16px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+  .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
+
+  /* === DASHBOARD === */
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .dash-full { grid-column: 1 / -1; }
+  .chart-wrap { position: relative; width: 100%; height: 240px; }
+  .chart-wrap-tall { position: relative; width: 100%; height: 320px; }
+
+  /* === PROGRESS BAR === */
+  .prog-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .prog-label { font-size: 12px; color: var(--text); width: 200px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .prog-bar-wrap { flex: 1; height: 8px; background: var(--navy-light); border-radius: 4px; overflow: hidden; }
+  .prog-bar { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.3s; }
+  .prog-val { font-size: 12px; font-weight: 600; color: var(--navy); width: 40px; text-align: right; }
+
+  /* === TABLE DASHBOARD === */
+  .db-table { width: 100%; border-collapse: collapse; }
+  .db-table th { background: var(--navy-xlight); color: var(--navy); padding: 9px 12px; font-size: 11px; font-weight: 600; text-align: left; border-bottom: 2px solid var(--border); text-transform: uppercase; letter-spacing: 0.4px; }
+  .db-table td { padding: 9px 12px; font-size: 13px; border-bottom: 1px solid var(--navy-light); vertical-align: middle; }
+  .db-table tr:hover td { background: var(--navy-xlight); }
+  .db-table td:not(:first-child) { text-align: center; }
+
+  /* === SYNTHESE === */
+  .synth-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .synth-kpi {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    border-top: 3px solid var(--navy);
+  }
+  .synth-kpi.accent { border-top-color: #1e4d8c; }
+  .synth-kpi.ok { border-top-color: #166534; }
+  .synth-kpi.warn { border-top-color: #b45309; }
+  .synth-kpi-val { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .synth-kpi-lbl { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 6px; }
+  .synth-kpi-sub { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+  /* === FROID TABLE === */
+  .froid-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+  .froid-section-header { background: var(--navy); color: white; padding: 8px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .froid-section-blue { background: #1a3a6b; color: white; padding: 8px 12px; font-size: 11px; font-weight: 700; text-align: center; letter-spacing: 0.3px; }
+  .froid-section-green { background: #14532d; color: white; padding: 8px 12px; font-size: 11px; font-weight: 700; text-align: center; letter-spacing: 0.3px; }
+  .froid-section-purple { background: #4c1d95; color: white; padding: 8px 12px; font-size: 11px; font-weight: 700; text-align: center; letter-spacing: 0.3px; }
+  .froid-th { background: var(--navy); color: white; padding: 10px 8px; font-size: 11px; font-weight: 600; text-align: center; white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.1); }
+  .froid-th.left { text-align: left; min-width: 160px; }
+  .froid-td-blue { background: #eff6ff; }
+  .froid-td-green { background: #f0fdf4; }
+  .froid-td-purple { background: #faf5ff; }
+  .note-input-blue { background: #dbeafe; }
+  .note-input-green { background: #dcfce7; }
+  .note-input-purple { background: #ede9fe; }
+
+  /* === EXPORT === */
+  .export-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .export-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .export-card h3 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .export-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; }
+  .btn-export {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-family: 'Aptos', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-export:hover { background: var(--accent); }
+  .btn-export.outline {
+    background: white;
+    color: var(--navy);
+    border: 1px solid var(--border);
+  }
+  .btn-export.outline:hover { background: var(--navy-xlight); }
+
+  /* === TOAST === */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--navy);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: #166534; }
+
+  /* === PRINT === */
+  @media print {
+    .app-header, .app-nav, .formation-selector, .action-bar, .btn-new, .btn-secondary, .btn-success, .btn-danger, .tab-subbar, .agents-toolbar, #import-file { display: none !important; }
+    .app-content { padding: 0; max-width: 100%; }
+    body { background: white; }
+    .page { display: none !important; }
+    .page.print-active { display: block !important; }
+    .subpage { display: none !important; }
+    .subpage.print-active { display: block !important; }
+    .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    table { min-width: 0 !important; }
+    .table-wrap { overflow: visible !important; }
+    th, td { font-size: 10px !important; padding: 4px 5px !important; }
+    .print-break { page-break-before: always; }
+    .chart-wrap, .chart-wrap-tall { height: 220px !important; }
+    .dash-grid { grid-template-columns: 1fr 1fr !important; }
+    .synth-grid { grid-template-columns: repeat(3,1fr) !important; }
+  }
+  #print-area { display: none; }
+  @media print {
+    body.printing-only-area #print-area { display: block !important; }
+    body.printing-only-area .app-header, body.printing-only-area .app-nav, body.printing-only-area .app-content { display: none !important; }
+    .print-report-title { font-size: 18px; font-weight:700; color: var(--navy); margin-bottom:4px; }
+    .print-report-sub { font-size:12px; color: var(--text-muted); margin-bottom:16px; }
+    .print-report-section { margin-bottom:18px; page-break-inside: avoid; }
+    .print-report-section h3 { font-size:13px; color:var(--navy); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px; border-bottom:2px solid var(--navy); padding-bottom:4px; }
+    .print-report-table { width:100%; border-collapse:collapse; font-size:10px; margin-bottom:10px; }
+    .print-report-table th { background:var(--navy); color:white; padding:4px 6px; font-size:9px; text-transform:uppercase; }
+    .print-report-table td { padding:4px 6px; border-bottom:1px solid #ddd; }
+    .print-report-kpis { display:flex; gap:10px; margin-bottom:14px; }
+    .print-report-kpi { flex:1; border:1px solid #ccc; border-radius:4px; padding:10px; text-align:center; }
+    .print-report-kpi .v { font-size:20px; font-weight:700; color:var(--navy); }
+    .print-report-kpi .l { font-size:9px; color:var(--text-muted); text-transform:uppercase; margin-top:3px; }
+    .print-logo-row { display:flex; align-items:center; gap:14px; margin-bottom:16px; border-bottom:2px solid var(--navy); padding-bottom:10px; }
+    .print-logo-row img { height:46px; }
+  }
+
+  /* === MISC === */
+  .action-bar { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .row-num { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: center; }
+  .btn-row-delete {
+    background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;
+    border-radius: 6px; width: 30px; height: 30px; font-size: 13px;
+    cursor: pointer; transition: all 0.15s; line-height:1;
+  }
+  .btn-row-delete:hover { background: #fca5a5; color: #7f1d1d; }
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text-light); }
+  .empty-state svg { width: 48px; height: 48px; margin: 0 auto 12px; display: block; opacity: 0.3; }
+  .empty-state p { font-size: 14px; }
+
+  .badge-dir {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--accent-light);
+    color: var(--accent);
+    letter-spacing: 0.3px;
+  }
+  .tab-subbar { display: flex; gap: 2px; margin-bottom: 20px; }
+  .subtab-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: white;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'Aptos', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .subtab-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .subpage { display: none; }
+  .subpage.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-brand">
+    <img class="header-logo-img" src="data:image/png;base64,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" alt="ANARE-CI">
+    <div>
+      <div class="header-title">Système d'Évaluation des Formations</div>
+      <div class="header-sub">Direction des Ressources Humaines — Procédure FORMATION Rév. 2/EN 004</div>
+    </div>
+  </div>
+  <select class="year-select" id="global-year-select" onchange="onYearChange(this.value)"></select>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="app-nav">
+  <button class="nav-btn active" onclick="showPage('accueil')">Accueil</button>
+  <button class="nav-btn" onclick="showPage('chaud')">Évaluations À Chaud</button>
+  <button class="nav-btn" onclick="showPage('froid')">Évaluations À Froid</button>
+  <button class="nav-btn" onclick="showPage('synthese')">Synthèse Générale</button>
+  <button class="nav-btn" onclick="showPage('collaborateurs')">Collaborateurs</button>
+  <button class="nav-btn" onclick="showPage('export')">Export & Impression</button>
+</nav>
+
+<div class="app-content">
+
+<!-- ===================== PAGE ACCUEIL ===================== -->
+<div class="page active" id="page-accueil">
+  <div class="page-title">Tableau de bord — Vue générale</div>
+  <div class="page-subtitle">Vue consolidée de toutes les évaluations enregistrées pour l'année <strong id="home-year-lbl"></strong></div>
+
+  <div class="stats-grid" id="home-stats">
+    <div class="stat-card info">
+      <div class="stat-label">Formations à chaud</div>
+      <div class="stat-value" id="h-nb-form-chaud">0</div>
+      <div class="stat-sub">formations saisies</div>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-label">Participants à chaud</div>
+      <div class="stat-value" id="h-nb-part-chaud">0</div>
+      <div class="stat-sub">évaluations enregistrées</div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-label">Formations à froid</div>
+      <div class="stat-value" id="h-nb-form-froid">0</div>
+      <div class="stat-sub">formations saisies</div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-label">Participants à froid</div>
+      <div class="stat-value" id="h-nb-part-froid">0</div>
+      <div class="stat-sub">évaluations enregistrées</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-label">Satisfaction moy. à chaud</div>
+      <div class="stat-value" id="h-sat-chaud">—</div>
+      <div class="stat-sub">score /4</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="stat-label">Satisfaction moy. à froid</div>
+      <div class="stat-value" id="h-sat-froid">—</div>
+      <div class="stat-sub">score /4</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">Mode d'emploi</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">1</div>
+          <div><strong style="font-size:13px;">Évaluations À Chaud</strong><br><span style="font-size:12px;color:var(--text-muted);">Saisie immédiate après la formation. 9 critères notés de 1 à 4. Saisir le matricule → les infos agent s'affichent automatiquement.</span></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">2</div>
+          <div><strong style="font-size:13px;">Évaluations À Froid</strong><br><span style="font-size:12px;color:var(--text-muted);">Saisie différée (après 1-3 mois). Niveaux avant/après formation + 5 questions de satisfaction. Maximum 8 compétences évaluées.</span></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--navy);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">3</div>
+          <div><strong style="font-size:13px;">Synthèse & Export</strong><br><span style="font-size:12px;color:var(--text-muted);">Consultez la synthèse globale et exportez les données pour impression ou rapport à la Direction.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Grille de notation</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--success-bg);border-radius:4px;">
+          <span style="font-size:20px;font-weight:700;color:#166534;min-width:24px;">4</span>
+          <div><strong style="font-size:13px;color:#166534;">Très bon / Expert / Entièrement d'accord</strong><br><span style="font-size:12px;color:#14532d;">Résultat excellent — objectif pleinement atteint</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--accent-light);border-radius:4px;">
+          <span style="font-size:20px;font-weight:700;color:#1e40af;min-width:24px;">3</span>
+          <div><strong style="font-size:13px;color:#1e40af;">Bon / Maîtrise / Plutôt d'accord</strong><br><span style="font-size:12px;color:#1e40af;">Résultat satisfaisant — bonne progression</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--warning-bg);border-radius:4px;">
+          <span style="font-size:20px;font-weight:700;color:#854f0b;min-width:24px;">2</span>
+          <div><strong style="font-size:13px;color:#854f0b;">Moyen / Application / Peu d'accord</strong><br><span style="font-size:12px;color:#854f0b;">Résultat insuffisant — amélioration nécessaire</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--danger-bg);border-radius:4px;">
+          <span style="font-size:20px;font-weight:700;color:#991b1b;min-width:24px;">1</span>
+          <div><strong style="font-size:13px;color:#991b1b;">Insatisfaisant / Notion / Pas d'avis</strong><br><span style="font-size:12px;color:#991b1b;">Résultat insuffisant — formation à revoir</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE CHAUD ===================== -->
+<div class="page" id="page-chaud">
+  <div class="tab-subbar">
+    <button class="subtab-btn active" onclick="showSubpage('chaud','saisie')">Saisie des notes</button>
+    <button class="subtab-btn" onclick="showSubpage('chaud','dashboard')">Tableau de bord</button>
+  </div>
+
+  <!-- SAISIE -->
+  <div class="subpage active" id="chaud-saisie">
+    <div class="page-title">Évaluation À Chaud — Saisie des données</div>
+    <div class="page-subtitle">Saisir le matricule dans la colonne correspondante — les informations de l'agent s'affichent automatiquement</div>
+
+    <div class="formation-selector">
+      <label>Formation :</label>
+      <select id="chaud-form-select" onchange="loadChaudFormation(this.value)" style="max-width:300px;">
+      </select>
+      <button class="btn-new" onclick="addChaudFormation()">+ Nouvelle formation</button>
+      <button class="btn-secondary" onclick="deleteChaudFormation()">Supprimer</button>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;" id="chaud-info-card">
+      <div class="card-title">Informations sur la formation</div>
+      <div class="form-grid">
+        <div class="form-group span-2">
+          <label>Titre / Thème de la formation *</label>
+          <input type="text" id="c-titre" placeholder="Intitulé complet de la formation" oninput="saveChaud()">
+        </div>
+        <div class="form-group">
+          <label>Organisme de formation *</label>
+          <input type="text" id="c-organisme" placeholder="Nom de l'organisme" oninput="saveChaud()">
+        </div>
+        <div class="form-group">
+          <label>Formateur / Intervenant</label>
+          <input type="text" id="c-formateur" placeholder="Nom du formateur" oninput="saveChaud()">
+        </div>
+        <div class="form-group">
+          <label>Date de début</label>
+          <input type="date" id="c-date-debut" oninput="saveChaud()">
+        </div>
+        <div class="form-group">
+          <label>Date de fin</label>
+          <input type="date" id="c-date-fin" oninput="saveChaud()">
+        </div>
+        <div class="form-group">
+          <label>Lieu</label>
+          <input type="text" id="c-lieu" placeholder="Ville / Salle" oninput="saveChaud()">
+        </div>
+        <div class="form-group">
+          <label>Durée (calculée automatiquement)</label>
+          <input type="text" id="c-duree" placeholder="—" readonly style="background:var(--navy-xlight);color:var(--text-muted);">
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#fffde7;border:1px solid #e5e7eb;"></div>Matricule — à saisir</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0f6ff;border:1px solid #e5e7eb;"></div>Infos agent — automatiques</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#fffde7;border:1px solid #e5e7eb;"></div>Notes 1→4 (décimales acceptées : ex. 3,5)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border:1px solid #e5e7eb;"></div>Moyenne — calculée automatiquement</div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="table-wrap">
+        <table id="chaud-table">
+          <thead>
+            <tr>
+              <th rowspan="2" style="width:40px;">N°</th>
+              <th rowspan="2" class="col-wide" style="min-width:100px;">Matricule</th>
+              <th rowspan="2" class="col-info col-wide" style="min-width:220px;">Nom & Prénoms</th>
+              <th rowspan="2" class="col-info" style="min-width:100px;">Catégorie</th>
+              <th rowspan="2" class="col-info col-wide" style="min-width:220px;">Fonction</th>
+              <th rowspan="2" class="col-info" style="min-width:80px;">Direction</th>
+              <th colspan="9" class="col-note" style="text-align:center;">Notes d'évaluation (1 = Insatisfaisant &nbsp;|&nbsp; 2 = Moyen &nbsp;|&nbsp; 3 = Bon &nbsp;|&nbsp; 4 = Très bon)</th>
+              <th rowspan="2" class="col-auto" style="min-width:80px;">Moyenne</th>
+              <th rowspan="2" style="min-width:260px;">Aspects retenus</th>
+              <th rowspan="2" style="min-width:260px;">Suggestions</th>
+              <th rowspan="2" style="width:50px;">Action</th>
+            </tr>
+            <tr>
+              <th class="col-note" style="min-width:80px;">Salle<br>formation</th>
+              <th class="col-note" style="min-width:80px;">Matériels<br>pédago.</th>
+              <th class="col-note" style="min-width:80px;">Pause /<br>Repas</th>
+              <th class="col-note" style="min-width:80px;">Métho-<br>dologie</th>
+              <th class="col-note" style="min-width:80px;">Cas<br>pratiques</th>
+              <th class="col-note" style="min-width:80px;">Qualité<br>prestation</th>
+              <th class="col-note" style="min-width:80px;">Cohérence<br>durée</th>
+              <th class="col-note" style="min-width:80px;">Cohérence<br>objectifs</th>
+              <th class="col-note" style="min-width:80px;">Satisfaction<br>attentes</th>
+            </tr>
+          </thead>
+          <tbody id="chaud-tbody"></tbody>
+        </table>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;">
+        <button class="btn-secondary" onclick="addChaudRow()">+ Ajouter un participant</button>
+        <button class="btn-secondary" onclick="addChaudRows(5)">+ Ajouter 5 lignes</button>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn-success" onclick="showSubpage('chaud','dashboard')">Voir le tableau de bord →</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CHAUD -->
+  <div class="subpage" id="chaud-dashboard">
+    <div class="page-title" id="dash-chaud-title">Tableau de bord — Évaluation À Chaud</div>
+    <div class="page-subtitle" id="dash-chaud-sub">Analyse de satisfaction des participants</div>
+
+    <div class="stats-grid" id="chaud-kpis"></div>
+
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-title">Moyenne par critère d'évaluation</div>
+        <div id="chaud-criteres-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Répartition des niveaux de satisfaction</div>
+        <div class="chart-wrap"><canvas id="chaud-repartition-chart" role="img" aria-label="Répartition des niveaux"></canvas></div>
+      </div>
+      <div class="card dash-full">
+        <div class="card-title">Liste des participants évalués</div>
+        <div class="table-wrap">
+          <table class="db-table" id="chaud-participants-table">
+            <thead>
+              <tr>
+                <th>Nom & Prénoms</th>
+                <th>Direction</th>
+                <th>Catégorie</th>
+                <th>Salle</th>
+                <th>Matériels</th>
+                <th>Pause</th>
+                <th>Méthodologie</th>
+                <th>Cas pratiques</th>
+                <th>Qualité</th>
+                <th>Cohér. durée</th>
+                <th>Cohér. objectifs</th>
+                <th>Satisfaction</th>
+                <th>Moyenne</th>
+              </tr>
+            </thead>
+            <tbody id="chaud-participants-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn-secondary" onclick="showSubpage('chaud','saisie')">← Retour à la saisie</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE FROID ===================== -->
+<div class="page" id="page-froid">
+  <div class="tab-subbar">
+    <button class="subtab-btn active" onclick="showSubpage('froid','saisie')">Saisie des données</button>
+    <button class="subtab-btn" onclick="showSubpage('froid','dashboard')">Tableau de bord</button>
+  </div>
+
+  <!-- SAISIE FROID -->
+  <div class="subpage active" id="froid-saisie">
+    <div class="page-title">Évaluation À Froid — Saisie des données</div>
+    <div class="page-subtitle">Niveaux de compétences avant/après formation et mesure de la satisfaction différée</div>
+
+    <div class="formation-selector">
+      <label>Formation :</label>
+      <select id="froid-form-select" onchange="loadFroidFormation(this.value)" style="max-width:300px;"></select>
+      <button class="btn-new" onclick="addFroidFormation()">+ Nouvelle formation</button>
+      <button class="btn-secondary" onclick="deleteFroidFormation()">Supprimer</button>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Informations sur la formation</div>
+      <div class="form-grid">
+        <div class="form-group span-2">
+          <label>Titre / Thème de la formation *</label>
+          <input type="text" id="f-titre" placeholder="Intitulé complet de la formation" oninput="saveFroid()">
+        </div>
+        <div class="form-group">
+          <label>Organisme de formation</label>
+          <input type="text" id="f-organisme" placeholder="Nom de l'organisme" oninput="saveFroid()">
+        </div>
+        <div class="form-group">
+          <label>Lieu</label>
+          <input type="text" id="f-lieu" placeholder="Ville / Pays" oninput="saveFroid()">
+        </div>
+        <div class="form-group">
+          <label>Date de début</label>
+          <input type="date" id="f-date-debut" oninput="saveFroid()">
+        </div>
+        <div class="form-group">
+          <label>Date de fin</label>
+          <input type="date" id="f-date-fin" oninput="saveFroid()">
+        </div>
+        <div class="form-group span-2">
+          <label>Durée totale (calculée automatiquement)</label>
+          <input type="text" id="f-duree" placeholder="—" readonly style="background:var(--navy-xlight);color:var(--text-muted);">
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="card-title" style="margin-bottom:12px;">Compétences évaluées (indiquer les intitulés — maximum 8 compétences)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="competences-grid"></div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#fffde7;border:1px solid #e5e7eb;"></div>Matricule — à saisir</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0f6ff;border:1px solid #e5e7eb;"></div>Infos agent — automatiques</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dbeafe;border:1px solid #93c5fd;"></div>Niveaux AVANT (1=Notion → 4=Expert)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dcfce7;border:1px solid #86efac;"></div>Niveaux APRÈS (1=Notion → 4=Expert)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ede9fe;border:1px solid #c4b5fd;"></div>Satisfaction (4=Entièrement d'accord → 1=Pas d'avis)</div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="table-wrap" id="froid-table-wrap">
+        <table class="froid-table" id="froid-table">
+          <thead id="froid-thead"></thead>
+          <tbody id="froid-tbody"></tbody>
+        </table>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:10px;">
+        <button class="btn-secondary" onclick="addFroidRow()">+ Ajouter un participant</button>
+        <button class="btn-secondary" onclick="addFroidRows(5)">+ Ajouter 5 lignes</button>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn-success" onclick="showSubpage('froid','dashboard')">Voir le tableau de bord →</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD FROID -->
+  <div class="subpage" id="froid-dashboard">
+    <div class="page-title" id="dash-froid-title">Tableau de bord — Évaluation À Froid</div>
+    <div class="page-subtitle" id="dash-froid-sub">Mesure de la progression des compétences et satisfaction différée</div>
+
+    <div class="stats-grid" id="froid-kpis"></div>
+
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-title">Progression par compétence (Avant vs Après)</div>
+        <div class="chart-wrap-tall"><canvas id="froid-comp-chart" role="img" aria-label="Progression par compétence"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Résultats aux questions de satisfaction</div>
+        <div id="froid-sat-bars"></div>
+      </div>
+      <div class="card dash-full">
+        <div class="card-title">Détail par participant</div>
+        <div class="table-wrap">
+          <table class="db-table">
+            <thead>
+              <tr>
+                <th>Nom & Prénoms</th>
+                <th>Direction</th>
+                <th>Moy. Avant</th>
+                <th>Moy. Après</th>
+                <th>Progression</th>
+                <th>Taux satisfaction</th>
+                <th>Appréciation</th>
+                <th>Suggestions</th>
+              </tr>
+            </thead>
+            <tbody id="froid-participants-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button class="btn-secondary" onclick="showSubpage('froid','saisie')">← Retour à la saisie</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE SYNTHESE ===================== -->
+<div class="page" id="page-synthese">
+  <div class="page-title">Synthèse Générale — Bilan des formations 2025</div>
+  <div class="page-subtitle">Vue consolidée de l'ensemble des évaluations à chaud et à froid — ANARE-CI</div>
+
+  <div class="synth-grid" id="synth-kpis"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">Formations à chaud — Satisfaction par formation</div>
+      <div class="chart-wrap-tall"><canvas id="synth-chaud-chart" role="img" aria-label="Satisfaction à chaud par formation"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Formations à froid — Progression par formation</div>
+      <div class="chart-wrap-tall"><canvas id="synth-froid-chart" role="img" aria-label="Progression à froid par formation"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">Récapitulatif — Toutes les formations à chaud</div>
+    <div class="table-wrap">
+      <table class="db-table" id="synth-chaud-table">
+        <thead>
+          <tr>
+            <th>Réf.</th>
+            <th>Titre de la formation</th>
+            <th>Organisme</th>
+            <th>Date</th>
+            <th>Participants</th>
+            <th>Moyenne globale</th>
+            <th>Salle</th>
+            <th>Matériels</th>
+            <th>Méthodologie</th>
+            <th>Qualité</th>
+            <th>Satisfaction</th>
+            <th>Appréciation</th>
+          </tr>
+        </thead>
+        <tbody id="synth-chaud-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Récapitulatif — Toutes les formations à froid</div>
+    <div class="table-wrap">
+      <table class="db-table" id="synth-froid-table">
+        <thead>
+          <tr>
+            <th>Réf.</th>
+            <th>Titre de la formation</th>
+            <th>Organisme</th>
+            <th>Participants</th>
+            <th>Moy. Avant</th>
+            <th>Moy. Après</th>
+            <th>Progression</th>
+            <th>Taux satisfaction</th>
+            <th>Appréciation</th>
+          </tr>
+        </thead>
+        <tbody id="synth-froid-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Suivi individuel — Évaluations À Chaud par participant (Année <span id="synth-part-year-c"></span>)</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Chaque agent apparaît une seule fois, avec sa moyenne pour chaque formation suivie et sa moyenne générale.</p>
+    <div class="table-wrap">
+      <table class="synth-part-table" id="synth-part-chaud-table">
+        <thead><tr id="synth-part-chaud-head"></tr></thead>
+        <tbody id="synth-part-chaud-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Suivi individuel — Évaluations À Froid par participant (Année <span id="synth-part-year-f"></span>)</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Progression (Après − Avant) de chaque agent pour chaque formation à froid suivie, et progression moyenne générale.</p>
+    <div class="table-wrap">
+      <table class="synth-part-table" id="synth-part-froid-table">
+        <thead><tr id="synth-part-froid-head"></tr></thead>
+        <tbody id="synth-part-froid-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE COLLABORATEURS ===================== -->
+<div class="page" id="page-collaborateurs">
+  <div class="page-title">Répertoire des Collaborateurs</div>
+  <div class="page-subtitle">Liste des agents ANARE-CI utilisés pour la saisie automatique des évaluations — vous pouvez ajouter de nouveaux collaborateurs</div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">Ajouter un collaborateur</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Matricule *</label>
+        <input type="text" id="ag-matricule" placeholder="Ex : 200A" style="text-transform:uppercase;">
+      </div>
+      <div class="form-group">
+        <label>Nom & Prénoms *</label>
+        <input type="text" id="ag-nom" placeholder="Nom complet">
+      </div>
+      <div class="form-group">
+        <label>Catégorie *</label>
+        <select id="ag-cat">
+          <option value="Cadre">Cadre</option>
+          <option value="Maîtrise">Maîtrise</option>
+          <option value="Employé">Employé</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Direction *</label>
+        <select id="ag-dir">
+        </select>
+      </div>
+      <div class="form-group span-2">
+        <label>Fonction *</label>
+        <input type="text" id="ag-fn" placeholder="Intitulé du poste">
+      </div>
+    </div>
+    <div class="action-bar" style="justify-content:flex-start;margin-top:10px;">
+      <button class="btn-success" onclick="addAgent()">+ Ajouter ce collaborateur</button>
+    </div>
+  </div>
+
+  <div class="agents-toolbar">
+    <input type="text" id="agent-search" placeholder="Rechercher par nom, matricule, fonction ou direction..." oninput="renderCollaborateurs()">
+    <span style="font-size:12px;color:var(--text-muted);" id="agent-count"></span>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-wrap">
+      <table class="db-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;">Matricule</th>
+            <th style="text-align:left;">Nom & Prénoms</th>
+            <th>Catégorie</th>
+            <th style="text-align:left;">Fonction</th>
+            <th>Direction</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="agents-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE EXPORT ===================== -->
+<div class="page" id="page-export">
+  <div class="page-title">Export & Impression</div>
+  <div class="page-subtitle" id="export-sub">Générer des rapports pour vos responsables hiérarchiques — Année <span id="export-year-lbl"></span></div>
+
+  <div class="export-grid">
+    <div class="export-card">
+      <h3>Rapport — Évaluation À Chaud (par formation)</h3>
+      <p>Sélectionnez une formation à chaud de l'année en cours. Le rapport imprimable contient les informations de la formation, les indicateurs clés, les moyennes par critère et le tableau complet des participants (avec aspects retenus et suggestions).</p>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Formation à imprimer</label>
+        <select id="export-chaud-select"></select>
+      </div>
+      <button class="btn-export" onclick="printChaudReport()">🖨 Imprimer ce rapport à chaud</button>
+    </div>
+    <div class="export-card">
+      <h3>Rapport — Évaluation À Froid (par formation)</h3>
+      <p>Sélectionnez une formation à froid de l'année en cours. Le rapport imprimable contient les compétences évaluées, les niveaux avant/après, les totaux, les progressions et les résultats de satisfaction de chaque participant.</p>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Formation à imprimer</label>
+        <select id="export-froid-select"></select>
+      </div>
+      <button class="btn-export" onclick="printFroidReport()">🖨 Imprimer ce rapport à froid</button>
+    </div>
+    <div class="export-card">
+      <h3>Synthèse Générale — Année <span id="export-year-lbl2"></span></h3>
+      <p>Rapport de synthèse consolidé : indicateurs clés, récapitulatif de toutes les formations à chaud et à froid, et suivi individuel de chaque participant. Idéal pour présentation à la Direction.</p>
+      <button class="btn-export" onclick="printSyntheseReport()">🖨 Imprimer la synthèse générale</button>
+    </div>
+    <div class="export-card">
+      <h3>Export CSV — Données brutes (Année <span id="export-year-lbl3"></span>)</h3>
+      <p>Exporter les données de l'année sélectionnée en format CSV pour traitement dans Excel ou autre tableur. Utile pour analyses approfondies.</p>
+      <button class="btn-export outline" onclick="exportCSV('chaud')">📥 CSV Évaluations À Chaud</button>
+      &nbsp;
+      <button class="btn-export outline" onclick="exportCSV('froid')" style="margin-top:8px;">📥 CSV Évaluations À Froid</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">Gestion des données</div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">Les données sont stockées dans le navigateur (localStorage), toutes années confondues. Vous pouvez sauvegarder ou restaurer l'ensemble de vos données.</p>
+    <div style="background:#eef6f1;border:1px solid #bfe3cd;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#0d6e4f;">
+      <strong>📤 Pour partager vos données avec un collègue / un responsable :</strong> cliquez sur "Envoyer par email à un collègue". Un fichier de sauvegarde sera téléchargé et un email s'ouvrira automatiquement avec les instructions — vous n'aurez qu'à joindre le fichier téléchargé avant d'envoyer. Le destinataire pourra ensuite l'importer via "Restaurer des données" pour voir et modifier les mêmes saisies.
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn-export" onclick="exportJSON()">💾 Sauvegarder toutes les données</button>
+      <button class="btn-export outline" onclick="importJSON()">📂 Restaurer des données</button>
+      <button class="btn-export" style="background:#0d6e4f;" onclick="shareByEmail()">✉️ Envoyer par email à un collègue</button>
+      <button class="btn-export outline" style="color:var(--danger);border-color:#fca5a5;" onclick="resetAll()">🗑 Réinitialiser tout</button>
+    </div>
+    <input type="file" id="import-file" accept=".json" style="display:none;" onchange="handleImport(event)">
+  </div>
+</div>
+
+</div><!-- /app-content -->
+
+<div class="toast" id="toast"></div>
+<div id="print-area"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+const AGENTS = {"008H":{nom:"OUIGNAN Martin",cat:"Cadre",fn:"Directeur Administratif et Financier",dir:"DAF"},"009I":{nom:"ASSOUKPOU N'Franny-Flora",cat:"Maîtrise",fn:"Assistante du PCR",dir:"PCR"},"015P":{nom:"KROU Henri Pépin",cat:"Cadre",fn:"Conseiller Spécial",dir:"DG"},"017R":{nom:"AKA Francis Ketiboah",cat:"Cadre",fn:"Conseiller",dir:"DG"},"022W":{nom:"AHOULI Yao Didier",cat:"Cadre",fn:"Chef de Service Informatique",dir:"DINT"},"026A":{nom:"OUAKOUBO Gnezié Jean Marcel",cat:"Employé",fn:"Agent Technique Maintenance",dir:"DINT"},"043S":{nom:"KOUADIO Bonin Aya Bertine",cat:"Cadre",fn:"Directeur Juridique Adjoint",dir:"DJ"},"046V":{nom:"N'GBIN Kouadio Kan Germain",cat:"Employé",fn:"Agent Administratif Parc Auto",dir:"DAF"},"049Y":{nom:"BAGODOU Agnimou Boullo Reine Esther",cat:"Cadre",fn:"Chef de Service RH",dir:"DAF"},"055E":{nom:"TAH Lou Tra Emma",cat:"Maîtrise",fn:"Secrétaire de Direction",dir:"DC"},"056F":{nom:"LACINA Cissé",cat:"Employé",fn:"Chauffeur",dir:"DAF"},"058H":{nom:"CAMARA Née NEDIOULA Alibi Valerie",cat:"Maîtrise",fn:"Assistante de Direction",dir:"DT"},"071V":{nom:"SOMBO Achou Arnaud",cat:"Cadre",fn:"Directeur Consommateurs",dir:"DC"},"075Z":{nom:"KOUDOU Yobo Apollinaire",cat:"Cadre",fn:"Directeur Adjoint Admin. Finance",dir:"DAF"},"076A":{nom:"BLE Kouassi Eugène",cat:"Cadre",fn:"Chef de Service Comptabilité",dir:"DAF"},"078C":{nom:"DIANE Akassi Marie José",cat:"Cadre",fn:"Chef de Service Moyens Généraux",dir:"DAF"},"081F":{nom:"BROU Apie Nina Celine",cat:"Maîtrise",fn:"Agent Technique Archivage",dir:"DINT"},"084I":{nom:"MONNEY Lou Irié Lucienne",cat:"Maîtrise",fn:"Secrétaire de Direction",dir:"DAF"},"087L":{nom:"AHOLIA Akaba Agnès",cat:"Maîtrise",fn:"Secrétaire de Direction",dir:"DJ"},"093S":{nom:"N'DRIN Brou Stéphane",cat:"Cadre",fn:"Directeur Juridique",dir:"DJ"},"095U":{nom:"BESSON Yapo Elias",cat:"Employé",fn:"Chauffeur",dir:"DAF"},"099Z":{nom:"AHUI Sasson Camille",cat:"Maîtrise",fn:"Agent Technique Vulgarisation",dir:"DC"},"100A":{nom:"ZIKE Gboahouli Paulin",cat:"Employé",fn:"Chauffeur",dir:"PCR"},"102C":{nom:"ACHI Bessecon Alain Gilles",cat:"Cadre",fn:"Chef de Service Consommateurs Intérieur",dir:"DC"},"104E":{nom:"COULIBALY Moussa Doméhé",cat:"Cadre",fn:"Cadre Contrôle Technique Distribution",dir:"DT"},"105F":{nom:"YAO Gnamien Emmanuelle",cat:"Cadre",fn:"Chef de Service Tarification",dir:"DEF"},"108I":{nom:"BLE Théodora Marie Claire",cat:"Maîtrise",fn:"Secrétaire de Direction",dir:"PCR"},"112M":{nom:"ADOU Amah Pascaline",cat:"Cadre",fn:"Cadre Comptable",dir:"DAF"},"118T":{nom:"MONDON Chiapault Gilles-Arnaud",cat:"Cadre",fn:"Chef de Service Contrôle Financier",dir:"DEF"},"119U":{nom:"EKUE Achalmé Charni Junior",cat:"Employé",fn:"Agent Technique Clientèle",dir:"DC"},"120V":{nom:"KAKADIE Affessi Rosine Hélène",cat:"Cadre",fn:"Chef de Service Communication",dir:"DG"},"121W":{nom:"KOUAME Raïssa Rita",cat:"Cadre",fn:"Chef de Service Consommateurs Abidjan",dir:"DC"},"122Y":{nom:"MIEZAN Eba Victoire",cat:"Cadre",fn:"Cadre Chargée de Recours",dir:"DC"},"123Z":{nom:"N'GBESSO Franck Michel",cat:"Cadre",fn:"Cadre Contrôle Technique Distribution",dir:"DT"},"125B":{nom:"FOUA Makoura Danielle Gema",cat:"Cadre",fn:"Cadre Chargée de Recours",dir:"DC"},"127D":{nom:"FOFANA Abou Bakari",cat:"Maîtrise",fn:"Agent Technique Production Transport",dir:"DT"},"130G":{nom:"EKOU Ebagnitchie Edouard",cat:"Maîtrise",fn:"Agent Technique Community Manager",dir:"DG"},"132I":{nom:"GAUZE Blanche Drey Victoire",cat:"Cadre",fn:"Cadre Relation Publique",dir:"DG"},"133J":{nom:"DJAMBOUE Bi Gouanan Stéphane",cat:"Employé",fn:"Chauffeur",dir:"DAF"},"134H":{nom:"SORO Nounofologo",cat:"Maîtrise",fn:"Agent Technique Clientèle",dir:"DC"},"135I":{nom:"COMARA Anzoumana",cat:"Employé",fn:"Chauffeur",dir:"PCR"},"136J":{nom:"MONSOH Doffou Marc Elisée",cat:"Cadre",fn:"Directeur Economique et Financier",dir:"DEF"},"137K":{nom:"M'BRA Kouassi Desmond",cat:"Cadre",fn:"Chef de Service Audit Interne",dir:"DG"},"139M":{nom:"KOUAKOU N'guessan Kan Constant",cat:"Cadre",fn:"Cadre Développement RH",dir:"DAF"},"140N":{nom:"KOFFI Thierry David",cat:"Employé",fn:"Chauffeur",dir:"DG"},"141P":{nom:"ZAMBLE Raoul Junior",cat:"Cadre",fn:"Chef de Service Production Transport",dir:"DT"},"142R":{nom:"BEHIRI Ange-Patricia",cat:"Cadre",fn:"Chef de Service Contrats Règlementation",dir:"DJ"},"143S":{nom:"KOUASSI Franck Stephane DECKY",cat:"Employé",fn:"Agent Courrier",dir:"DINT"},"144T":{nom:"TRAORE Amidou",cat:"Cadre",fn:"Directeur Général",dir:"DG"},"145U":{nom:"YEO Nahoua",cat:"Maîtrise",fn:"Chargé de mission",dir:"DG"},"146V":{nom:"ADON Epse POHANN Angèle Patricia",cat:"Cadre",fn:"Assistante du Directeur Général",dir:"DG"},"147W":{nom:"TOPE Epse NOBOUT Beugré Diane",cat:"Cadre",fn:"Cadre QSE-RSE",dir:"DG"},"148Y":{nom:"DIAKITE Sékou Tidiane",cat:"Cadre",fn:"Cadre Juriste",dir:"DJ"},"149Z":{nom:"FOFANA Youssouf Latif",cat:"Maîtrise",fn:"Assistant Ressources Humaines",dir:"DAF"},"151B":{nom:"YEO Torna",cat:"Cadre",fn:"Cadre Gestion de données",dir:"DINT"},"152C":{nom:"ASSEMIAN Ebah Claude-Axel",cat:"Cadre",fn:"Cadre Audit Interne",dir:"DG"},"153D":{nom:"DIALLO Ténin Djénéba",cat:"Cadre",fn:"Cadre Juriste",dir:"DJ"},"154E":{nom:"YOMAN Micisso Marguérite",cat:"Cadre",fn:"Chef de Service Contentieux",dir:"DJ"},"155F":{nom:"SORO Chiombin Kassoum",cat:"Cadre",fn:"Directeur Innovation Nouvelles Technologies",dir:"DINT"},"156G":{nom:"BLEDOU Ekra Laurent",cat:"Cadre",fn:"Directeur Technique",dir:"DT"},"157H":{nom:"SAKO Jean François Régis",cat:"Cadre",fn:"Cadre Analyste Economique",dir:"DEF"},"158I":{nom:"KOUADIO Koffi Jacques Arnaud",cat:"Cadre",fn:"Cadre chargé d'études",dir:"PCR"},"159J":{nom:"TCHA Kouhadio Goli",cat:"Cadre",fn:"Chef de Service Distribution",dir:"DT"},"160K":{nom:"ABOUA Blandine Flora",cat:"Cadre",fn:"Cadre Analyste Financier",dir:"DEF"},"161L":{nom:"DOSSO Daouda",cat:"Employé",fn:"Chauffeur",dir:"PCR"},"162M":{nom:"BAIKRO Nambessé",cat:"Maîtrise",fn:"Chargée de Mission",dir:"PCR"},"163N":{nom:"N'GUESSAN Atchuêlou Hélline Laurette",cat:"Employé",fn:"Agent Technique Clientèle",dir:"DC"}};
+
+const LOGO_DATAURI = 'data:image/png;base64,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';
+const CRITERES_CHAUD = ['Salle formation','Matériels pédago.','Pause / Repas','Méthodologie','Cas pratiques','Qualité prestation','Cohérence durée','Cohérence objectifs','Satisfaction attentes'];
+const QUESTIONS_FROID = ["La formation a été demandée en concertation avec le supérieur hiérarchique","Cette formation est en rapport direct avec l'activité","L'agent ressentait un réel besoin de suivre cette formation","L'agent applique les connaissances acquises sur son poste","L'agent recommanderait cette formation à un collègue"];
+const YEARS = []; for(let y=2024; y<=2040; y++) YEARS.push(y);
+const DIRECTIONS = ['DG','DAF','DT','DC','DJ','DEF','DINT','PCR'];
+
+let AGENTS_CUSTOM = {};
+let currentYear = 2025;
+
+let chaudData = {};
+let froidData = {};
+let currentChaudId = null;
+let currentFroidId = null;
+let chaudCharts = {};
+let froidCharts = {};
+let synthCharts = {};
+
+// ============================================================
+//  AGENTS (built-in + custom)
+// ============================================================
+function getAgent(mat) {
+  if(!mat) return null;
+  const m = mat.toUpperCase();
+  return AGENTS_CUSTOM[m] || AGENTS[m] || null;
+}
+function allAgentsMap() {
+  return Object.assign({}, AGENTS, AGENTS_CUSTOM);
+}
+function loadAgentsCustom() {
+  try {
+    const a = localStorage.getItem('anare_agents_custom');
+    AGENTS_CUSTOM = a ? JSON.parse(a) : {};
+  } catch(e) { AGENTS_CUSTOM = {}; }
+}
+function saveAgentsCustom() {
+  localStorage.setItem('anare_agents_custom', JSON.stringify(AGENTS_CUSTOM));
+}
+
+// ============================================================
+//  COLLABORATEURS — PAGE
+// ============================================================
+function populateDirSelect() {
+  const sel = document.getElementById('ag-dir');
+  if(sel && !sel.options.length) {
+    sel.innerHTML = DIRECTIONS.map(d=>`<option value="${d}">${d}</option>`).join('');
+  }
+}
+function addAgent() {
+  const mat = document.getElementById('ag-matricule').value.trim().toUpperCase();
+  const nom = document.getElementById('ag-nom').value.trim();
+  const cat = document.getElementById('ag-cat').value;
+  const dir = document.getElementById('ag-dir').value;
+  const fn = document.getElementById('ag-fn').value.trim();
+  if(!mat || !nom || !fn) { showToast('Veuillez remplir tous les champs obligatoires (*)'); return; }
+  if(getAgent(mat)) { showToast('Ce matricule existe déjà dans le répertoire'); return; }
+  AGENTS_CUSTOM[mat] = { nom, cat, fn, dir };
+  saveAgentsCustom();
+  document.getElementById('ag-matricule').value = '';
+  document.getElementById('ag-nom').value = '';
+  document.getElementById('ag-fn').value = '';
+  renderCollaborateurs();
+  showToast('Collaborateur ajouté avec succès','success');
+}
+function deleteAgent(mat) {
+  if(!confirm('Supprimer ce collaborateur du répertoire ?')) return;
+  delete AGENTS_CUSTOM[mat];
+  saveAgentsCustom();
+  renderCollaborateurs();
+  showToast('Collaborateur supprimé');
+}
+function renderCollaborateurs() {
+  populateDirSelect();
+  const all = allAgentsMap();
+  const search = (document.getElementById('agent-search')?.value || '').toLowerCase();
+  const entries = Object.entries(all).filter(([mat,a]) => {
+    if(!search) return true;
+    return mat.toLowerCase().includes(search) || a.nom.toLowerCase().includes(search) || a.fn.toLowerCase().includes(search) || a.dir.toLowerCase().includes(search);
+  }).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  document.getElementById('agent-count').textContent = entries.length + ' collaborateur(s)';
+  document.getElementById('agents-tbody').innerHTML = entries.map(([mat,a]) => `
+    <tr>
+      <td style="text-align:left;font-weight:600;">${mat}${AGENTS_CUSTOM[mat]?'<span class="agent-tag-custom">Ajouté</span>':''}</td>
+      <td style="text-align:left;">${a.nom}</td>
+      <td>${a.cat}</td>
+      <td style="text-align:left;font-size:12px;">${a.fn}</td>
+      <td><span class="badge-dir">${a.dir}</span></td>
+      <td>${AGENTS_CUSTOM[mat] ? `<button class="btn-danger" onclick="deleteAgent('${mat}')">Supprimer</button>` : '<span style="font-size:11px;color:var(--text-light);">—</span>'}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="6" style="text-align:center;padding:24px;color:#888;">Aucun collaborateur trouvé</td></tr>';
+}
+
+// ============================================================
+//  DATES & DURATIONS
+// ============================================================
+function computeDuree(d1, d2) {
+  if(!d1 || !d2) return '';
+  const a = new Date(d1), b = new Date(d2);
+  if(isNaN(a) || isNaN(b) || b < a) return '';
+  const days = Math.round((b - a) / 86400000) + 1;
+  return days + (days > 1 ? ' jours' : ' jour');
+}
+
+// ============================================================
+//  YEAR SELECTOR
+// ============================================================
+function initYearSelect() {
+  const sel = document.getElementById('global-year-select');
+  sel.innerHTML = YEARS.map(y => `<option value="${y}">Année ${y}</option>`).join('');
+  const saved = localStorage.getItem('anare_current_year');
+  currentYear = saved && YEARS.includes(parseInt(saved)) ? parseInt(saved) : 2025;
+  sel.value = currentYear;
+}
+function onYearChange(y) {
+  currentYear = parseInt(y);
+  localStorage.setItem('anare_current_year', String(currentYear));
+  initChaud();
+  initFroid();
+  updateHomeStats();
+  showToast('Année ' + currentYear + ' sélectionnée', 'success');
+}
+
+// ============================================================
+//  STORAGE
+// ============================================================
+function loadStorage() {
+  try {
+    const cd = localStorage.getItem('anare_chaud_2025');
+    const fd = localStorage.getItem('anare_froid_2025');
+    chaudData = cd ? JSON.parse(cd) : {};
+    froidData = fd ? JSON.parse(fd) : {};
+  } catch(e) { chaudData = {}; froidData = {}; }
+  // Migration: ensure year + dateDebut/dateFin exist
+  Object.values(chaudData).forEach(d => {
+    if(!d.year) d.year = 2025;
+    if(d.date && !d.dateDebut) { d.dateDebut = d.date; d.dateFin = d.date; }
+    if(d.dateDebut === undefined) d.dateDebut = '';
+    if(d.dateFin === undefined) d.dateFin = '';
+    if(!d.duree) d.duree = computeDuree(d.dateDebut, d.dateFin);
+  });
+  Object.values(froidData).forEach(d => {
+    if(!d.year) d.year = 2025;
+    if(d.dateDebut === undefined) d.dateDebut = '';
+    if(d.dateFin === undefined) d.dateFin = '';
+    d.duree = computeDuree(d.dateDebut, d.dateFin);
+  });
+}
+function saveStorage() {
+  localStorage.setItem('anare_chaud_2025', JSON.stringify(chaudData));
+  localStorage.setItem('anare_froid_2025', JSON.stringify(froidData));
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event && event.target && event.target.classList.add('active');
+  if(name === 'synthese') renderSynthese();
+  if(name === 'accueil') updateHomeStats();
+  if(name === 'collaborateurs') renderCollaborateurs();
+  if(name === 'export') renderExportPage();
+}
+function showSubpage(page, sub) {
+  document.querySelectorAll('#page-'+page+' .subpage').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#page-'+page+' .subtab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(page+'-'+sub).classList.add('active');
+  const btns = document.querySelectorAll('#page-'+page+' .subtab-btn');
+  const idx = sub === 'saisie' ? 0 : 1;
+  if(btns[idx]) btns[idx].classList.add('active');
+  if(page==='chaud' && sub==='dashboard') renderChaudDashboard();
+  if(page==='froid' && sub==='dashboard') renderFroidDashboard();
+}
+
+// ============================================================
+//  CHAUD — FORMATIONS
+// ============================================================
+function chaudIdsForYear() {
+  return Object.entries(chaudData).filter(([id,d]) => d.year === currentYear).map(([id])=>id);
+}
+function initChaud() {
+  if(chaudIdsForYear().length === 0) addChaudFormation(true);
+  renderChaudSelect();
+  const ids = chaudIdsForYear();
+  currentChaudId = ids[0];
+  loadChaudFormation(currentChaudId);
+}
+function addChaudFormation(silent) {
+  const id = 'C' + Date.now();
+  const n = chaudIdsForYear().length + 1;
+  chaudData[id] = {
+    year: currentYear,
+    ref: 'F' + String(n).padStart(2,'0'),
+    titre:'', organisme:'', formateur:'', dateDebut:'', dateFin:'', lieu:'', duree:'',
+    rows: []
+  };
+  for(let i=0;i<5;i++) chaudData[id].rows.push(emptyChaudRow());
+  saveStorage();
+  renderChaudSelect();
+  currentChaudId = id;
+  document.getElementById('chaud-form-select').value = id;
+  loadChaudFormation(id);
+  if(!silent) showToast('Nouvelle formation créée pour ' + currentYear,'success');
+}
+function emptyChaudRow() {
+  return {matricule:'', notes:[null,null,null,null,null,null,null,null,null], aspects:'', suggestions:''};
+}
+function deleteChaudFormation() {
+  if(!currentChaudId || !confirm('Supprimer cette formation ? Cette action est irréversible.')) return;
+  delete chaudData[currentChaudId];
+  saveStorage();
+  const ids = chaudIdsForYear();
+  if(ids.length === 0) addChaudFormation(true);
+  else { currentChaudId = ids[0]; }
+  renderChaudSelect();
+  loadChaudFormation(currentChaudId);
+  showToast('Formation supprimée');
+}
+function renderChaudSelect() {
+  const sel = document.getElementById('chaud-form-select');
+  sel.innerHTML = '';
+  chaudIdsForYear().forEach(id => {
+    const d = chaudData[id];
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = (d.ref || '—') + ' — ' + (d.titre || '(sans titre)');
+    sel.appendChild(opt);
+  });
+  if(currentChaudId) sel.value = currentChaudId;
+}
+function loadChaudFormation(id) {
+  currentChaudId = id;
+  const d = chaudData[id];
+  if(!d) return;
+  document.getElementById('c-titre').value = d.titre || '';
+  document.getElementById('c-organisme').value = d.organisme || '';
+  document.getElementById('c-formateur').value = d.formateur || '';
+  document.getElementById('c-date-debut').value = d.dateDebut || '';
+  document.getElementById('c-date-fin').value = d.dateFin || '';
+  document.getElementById('c-lieu').value = d.lieu || '';
+  document.getElementById('c-duree').value = computeDuree(d.dateDebut, d.dateFin);
+  renderChaudTable();
+}
+function saveChaud() {
+  if(!currentChaudId) return;
+  const d = chaudData[currentChaudId];
+  d.titre = document.getElementById('c-titre').value;
+  d.organisme = document.getElementById('c-organisme').value;
+  d.formateur = document.getElementById('c-formateur').value;
+  d.dateDebut = document.getElementById('c-date-debut').value;
+  d.dateFin = document.getElementById('c-date-fin').value;
+  d.lieu = document.getElementById('c-lieu').value;
+  d.duree = computeDuree(d.dateDebut, d.dateFin);
+  document.getElementById('c-duree').value = d.duree;
+  saveStorage();
+  renderChaudSelect();
+}
+
+// ============================================================
+//  CHAUD — TABLE
+// ============================================================
+function renderChaudTable() {
+  const tbody = document.getElementById('chaud-tbody');
+  tbody.innerHTML = '';
+  const d = chaudData[currentChaudId];
+  if(!d) return;
+  d.rows.forEach((row, i) => { tbody.appendChild(buildChaudRow(row, i)); });
+}
+function buildChaudRow(row, i) {
+  const tr = document.createElement('tr');
+  const agent = row.matricule ? getAgent(row.matricule.toUpperCase()) : null;
+
+  tr.innerHTML = `
+    <td class="row-num">${i+1}</td>
+    <td><input class="matricule-input" value="${row.matricule||''}" placeholder="Ex: 049Y" oninput="onChaudMatricule(this,${i})" style="text-transform:uppercase;"></td>
+    <td class="td-info">${agent ? agent.nom : (row.matricule ? '<span class="no-match">Matricule inconnu</span>' : '')}</td>
+    <td class="td-info td-num">${agent ? agent.cat : ''}</td>
+    <td class="td-info">${agent ? agent.fn : ''}</td>
+    <td class="td-info td-num"><span class="badge-dir">${agent ? agent.dir : ''}</span></td>
+    ${row.notes.map((n,j) => `<td class="td-num"><input class="note-input" type="number" min="1" max="4" step="0.5" value="${n||''}" placeholder="—" oninput="onChaudNote(this,${i},${j})"></td>`).join('')}
+    <td class="td-num">${noteBadge(calcMoy(row.notes))}</td>
+    <td><textarea class="text-input text-input-wide" rows="2" placeholder="Aspects positifs retenus..." oninput="onChaudText(this,${i},'aspects')">${row.aspects||''}</textarea></td>
+    <td><textarea class="text-input text-input-wide" rows="2" placeholder="Suggestions d'amélioration..." oninput="onChaudText(this,${i},'suggestions')">${row.suggestions||''}</textarea></td>
+    <td style="text-align:center;"><button class="btn-row-delete" title="Supprimer cette ligne" onclick="deleteChaudRow(${i})">🗑</button></td>
+  `;
+  return tr;
+}
+function deleteChaudRow(i) {
+  const d = chaudData[currentChaudId];
+  if(!confirm('Supprimer cette ligne participant ?')) return;
+  d.rows.splice(i,1);
+  if(d.rows.length === 0) d.rows.push(emptyChaudRow());
+  saveStorage();
+  renderChaudTable();
+}
+function onChaudMatricule(inp, i) {
+  const d = chaudData[currentChaudId];
+  d.rows[i].matricule = inp.value.toUpperCase();
+  saveStorage();
+  const tr = inp.closest('tr');
+  const agent = getAgent(inp.value.toUpperCase());
+  const cells = tr.querySelectorAll('td.td-info');
+  cells[0].textContent = agent ? agent.nom : (inp.value ? '— Matricule inconnu —' : '');
+  cells[1].textContent = agent ? agent.cat : '';
+  cells[2].textContent = agent ? agent.fn : '';
+  cells[3].innerHTML = agent ? `<span class="badge-dir">${agent.dir}</span>` : '';
+}
+function onChaudNote(inp, i, j) {
+  const v = parseFloat(inp.value);
+  const d = chaudData[currentChaudId];
+  if(inp.value === '') { d.rows[i].notes[j] = null; inp.classList.remove('invalid'); }
+  else if(isNaN(v) || v < 1 || v > 4) { inp.classList.add('invalid'); return; }
+  else { d.rows[i].notes[j] = v; inp.classList.remove('invalid'); }
+  saveStorage();
+  const moy = calcMoy(d.rows[i].notes);
+  inp.closest('tr').querySelectorAll('td')[15].innerHTML = noteBadge(moy);
+}
+function onChaudText(inp, i, field) {
+  chaudData[currentChaudId].rows[i][field] = inp.value;
+  saveStorage();
+}
+function addChaudRow() { chaudData[currentChaudId].rows.push(emptyChaudRow()); saveStorage(); renderChaudTable(); }
+function addChaudRows(n) { for(let i=0;i<n;i++) chaudData[currentChaudId].rows.push(emptyChaudRow()); saveStorage(); renderChaudTable(); }
+
+// ============================================================
+//  CHAUD — DASHBOARD
+// ============================================================
+function renderChaudDashboard() {
+  const d = chaudData[currentChaudId];
+  if(!d) return;
+  const rows = d.rows.filter(r => r.matricule && getAgent(r.matricule) && r.notes.some(n=>n));
+  document.getElementById('dash-chaud-title').textContent = 'Tableau de bord — ' + (d.titre || 'Formation sans titre');
+  document.getElementById('dash-chaud-sub').textContent = (d.organisme?d.organisme+' — ':'')+('Du '+(d.dateDebut||'—')+' au '+(d.dateFin||'—'))+(' — Lieu : '+(d.lieu||'Non défini'))+(' — Durée : '+(d.duree||'—'));
+
+  const moyGlobale = rows.length ? rows.reduce((s,r)=>s+(calcMoy(r.notes)||0),0)/rows.length : 0;
+  const distrib = [0,0,0,0];
+  rows.forEach(r => { const m = calcMoy(r.notes); if(m) { const idx = Math.min(3, Math.max(0, Math.ceil(m)-1)); distrib[idx]++; } });
+
+  document.getElementById('chaud-kpis').innerHTML = `
+    <div class="stat-card info"><div class="stat-label">Participants évalués</div><div class="stat-value">${rows.length}</div></div>
+    <div class="stat-card ${moyGlobale>=3?'success':moyGlobale>=2?'warning':'danger'}"><div class="stat-label">Moyenne globale</div><div class="stat-value">${moyGlobale?moyGlobale.toFixed(2):'—'}</div><div class="stat-sub">sur 4</div></div>
+    <div class="stat-card ${moyGlobale>=3?'success':moyGlobale>=2?'warning':'danger'}"><div class="stat-label">Taux de satisfaction</div><div class="stat-value">${moyGlobale?Math.round((moyGlobale/4)*100)+'%':'—'}</div></div>
+    <div class="stat-card success"><div class="stat-label">Très satisfaits (≥ 3)</div><div class="stat-value">${rows.filter(r=>calcMoy(r.notes)>=3).length}</div><div class="stat-sub">participants</div></div>
+  `;
+
+  // Critères bars
+  const moysCriteres = CRITERES_CHAUD.map((c,j) => {
+    const vals = rows.map(r=>r.notes[j]).filter(v=>v);
+    return vals.length ? vals.reduce((s,v)=>s+v,0)/vals.length : 0;
+  });
+  document.getElementById('chaud-criteres-bars').innerHTML = CRITERES_CHAUD.map((c,j) => {
+    const v = moysCriteres[j]; const pct = (v/4)*100;
+    return `<div class="prog-row"><div class="prog-label" title="${c}">${c}</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%;background:${v>=3?'#166534':v>=2?'#b45309':'#991b1b'};"></div></div><div class="prog-val">${v?v.toFixed(1):'—'}</div></div>`;
+  }).join('');
+
+  // Repartition chart
+  destroyChart('chaud-repartition-chart');
+  if(rows.length) {
+    chaudCharts['repartition'] = new Chart(document.getElementById('chaud-repartition-chart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Insatisfaisant (1)', 'Moyen (2)', 'Bon (3)', 'Très bon (4)'],
+        datasets: [{
+          data: distrib,
+          backgroundColor: ['#ef4444','#f59e0b','#3b82f6','#22c55e'],
+          borderWidth: 2, borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { family: 'Aptos', size: 12 }, padding: 12 } } }
+      }
+    });
+  }
+
+  // Participants table
+  const tbody = document.getElementById('chaud-participants-body');
+  tbody.innerHTML = rows.map(r => {
+    const a = getAgent(r.matricule);
+    const m = calcMoy(r.notes);
+    return `<tr>
+      <td>${a?a.nom:r.matricule}</td>
+      <td><span class="badge-dir">${a?a.dir:''}</span></td>
+      <td>${a?a.cat:''}</td>
+      ${r.notes.map(n=>`<td>${noteBadge(n)}</td>`).join('')}
+      <td>${noteBadge(m)}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="13" class="empty-state" style="text-align:center;padding:24px;color:#888;">Aucun participant enregistré</td></tr>';
+}
+function destroyChart(id) {
+  const existing = Chart.getChart(id);
+  if(existing) existing.destroy();
+}
+
+// ============================================================
+//  FROID — FORMATIONS
+// ============================================================
+function froidIdsForYear() {
+  return Object.entries(froidData).filter(([id,d]) => d.year === currentYear).map(([id])=>id);
+}
+function initFroid() {
+  if(froidIdsForYear().length === 0) addFroidFormation(true);
+  renderFroidSelect();
+  const ids = froidIdsForYear();
+  currentFroidId = ids[0];
+  loadFroidFormation(currentFroidId);
+}
+function addFroidFormation(silent) {
+  const id = 'F' + Date.now();
+  const n = froidIdsForYear().length + 1;
+  froidData[id] = {
+    year: currentYear,
+    ref: 'F' + String(n).padStart(2,'0'),
+    titre:'', organisme:'', lieu:'', dateDebut:'', dateFin:'', duree:'',
+    competences: Array(8).fill(''),
+    rows: []
+  };
+  for(let i=0;i<5;i++) froidData[id].rows.push(emptyFroidRow());
+  saveStorage();
+  renderFroidSelect();
+  currentFroidId = id;
+  document.getElementById('froid-form-select').value = id;
+  loadFroidFormation(id);
+  if(!silent) showToast('Nouvelle formation créée pour ' + currentYear,'success');
+}
+function emptyFroidRow() {
+  return {matricule:'', avant: Array(8).fill(null), apres: Array(8).fill(null), satisfaction: Array(5).fill(null), suggestions:''};
+}
+function deleteFroidFormation() {
+  if(!currentFroidId || !confirm('Supprimer cette formation ? Cette action est irréversible.')) return;
+  delete froidData[currentFroidId];
+  saveStorage();
+  const ids = froidIdsForYear();
+  if(ids.length === 0) addFroidFormation(true);
+  else currentFroidId = ids[0];
+  renderFroidSelect();
+  loadFroidFormation(currentFroidId);
+  showToast('Formation supprimée');
+}
+function renderFroidSelect() {
+  const sel = document.getElementById('froid-form-select');
+  sel.innerHTML = '';
+  froidIdsForYear().forEach(id => {
+    const d = froidData[id];
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = (d.ref||'—') + ' — ' + (d.titre || '(sans titre)');
+    sel.appendChild(opt);
+  });
+  if(currentFroidId) sel.value = currentFroidId;
+}
+function loadFroidFormation(id) {
+  currentFroidId = id;
+  const d = froidData[id];
+  if(!d) return;
+  document.getElementById('f-titre').value = d.titre||'';
+  document.getElementById('f-organisme').value = d.organisme||'';
+  document.getElementById('f-lieu').value = d.lieu||'';
+  document.getElementById('f-date-debut').value = d.dateDebut||'';
+  document.getElementById('f-date-fin').value = d.dateFin||'';
+  document.getElementById('f-duree').value = computeDuree(d.dateDebut, d.dateFin);
+  renderCompetencesGrid();
+  renderFroidTable();
+}
+function saveFroid() {
+  if(!currentFroidId) return;
+  const d = froidData[currentFroidId];
+  d.titre = document.getElementById('f-titre').value;
+  d.organisme = document.getElementById('f-organisme').value;
+  d.lieu = document.getElementById('f-lieu').value;
+  d.dateDebut = document.getElementById('f-date-debut').value;
+  d.dateFin = document.getElementById('f-date-fin').value;
+  d.duree = computeDuree(d.dateDebut, d.dateFin);
+  document.getElementById('f-duree').value = d.duree;
+  saveStorage();
+  renderFroidSelect();
+}
+function renderCompetencesGrid() {
+  const d = froidData[currentFroidId];
+  const grid = document.getElementById('competences-grid');
+  grid.innerHTML = Array(8).fill(0).map((_,i) => `
+    <div class="form-group">
+      <label>Compétence ${i+1}</label>
+      <input type="text" value="${d.competences[i]||''}" placeholder="Intitulé de la compétence ${i+1}" oninput="onCompetenceChange(this,${i})">
+    </div>
+  `).join('');
+}
+function onCompetenceChange(inp, i) {
+  froidData[currentFroidId].competences[i] = inp.value;
+  saveStorage();
+  renderFroidTable();
+}
+
+// ============================================================
+//  FROID — TABLE
+// ============================================================
+function renderFroidTable() {
+  const d = froidData[currentFroidId];
+  if(!d) return;
+  const comps = d.competences.filter(c=>c.trim());
+  const nComp = Math.max(1, comps.length);
+
+  // Build header
+  const thead = document.getElementById('froid-thead');
+  thead.innerHTML = `
+    <tr>
+      <th class="froid-th" rowspan="2" style="width:40px;">N°</th>
+      <th class="froid-th left" rowspan="2">Matricule</th>
+      <th class="froid-th left" rowspan="2" style="min-width:200px;">Nom & Prénoms</th>
+      <th class="froid-th" rowspan="2" style="min-width:90px;">Catégorie</th>
+      <th class="froid-th left" rowspan="2" style="min-width:180px;">Fonction</th>
+      <th class="froid-th" rowspan="2" style="min-width:70px;">Direction</th>
+      <th colspan="${nComp}" style="background:#1a3a6b;color:white;padding:8px;font-size:11px;font-weight:700;text-align:center;letter-spacing:0.3px;">NIVEAUX AVANT FORMATION (1=Notion → 4=Expert)</th>
+      <th class="froid-th" rowspan="2" style="background:#0d2545;min-width:75px;">Moy. Avant</th>
+      <th class="froid-th" rowspan="2" style="background:#0d2545;min-width:80px;">Total Avant /${nComp*4}</th>
+      <th colspan="${nComp}" style="background:#14532d;color:white;padding:8px;font-size:11px;font-weight:700;text-align:center;letter-spacing:0.3px;">NIVEAUX APRÈS FORMATION (1=Notion → 4=Expert)</th>
+      <th class="froid-th" rowspan="2" style="background:#064e3b;min-width:75px;">Moy. Après</th>
+      <th class="froid-th" rowspan="2" style="background:#064e3b;min-width:80px;">Total Après /${nComp*4}</th>
+      <th class="froid-th" rowspan="2" style="background:#064e3b;min-width:85px;">Progression</th>
+      <th colspan="5" style="background:#4c1d95;color:white;padding:8px;font-size:11px;font-weight:700;text-align:center;letter-spacing:0.3px;">QUESTIONS DE SATISFACTION (4=Entièrement d'accord → 1=Pas d'avis)</th>
+      <th class="froid-th" rowspan="2" style="background:#3b0764;min-width:75px;">Total /20</th>
+      <th class="froid-th" rowspan="2" style="background:#3b0764;min-width:75px;">Taux Sat.</th>
+      <th class="froid-th" rowspan="2" style="background:#3b0764;min-width:120px;">Appréciation</th>
+      <th class="froid-th" rowspan="2" style="min-width:140px;">Suggestions</th>
+      <th class="froid-th" rowspan="2" style="width:50px;">Action</th>
+    </tr>
+    <tr>
+      ${comps.map(c=>`<th class="froid-th" style="background:#1a3a6b;min-width:80px;font-size:10px;">${c}</th>`).join('')}
+      ${comps.map(c=>`<th class="froid-th" style="background:#14532d;min-width:80px;font-size:10px;">${c}</th>`).join('')}
+      ${['Concertée avec N+1','En rapport avec l\'activité','Besoin réel ressenti','Connaissances appliquées','Formation recommandable'].map(q=>`<th class="froid-th" style="background:#4c1d95;min-width:80px;font-size:10px;">${q}</th>`).join('')}
+    </tr>
+  `;
+
+  const tbody = document.getElementById('froid-tbody');
+  tbody.innerHTML = '';
+  d.rows.forEach((row,i) => tbody.appendChild(buildFroidRow(row, i, comps)));
+}
+function buildFroidRow(row, i, comps) {
+  const tr = document.createElement('tr');
+  const agent = row.matricule ? getAgent(row.matricule.toUpperCase()) : null;
+  const nComp = comps.length || 1;
+
+  const avantVals = row.avant.slice(0, nComp);
+  const apresVals = row.apres.slice(0, nComp);
+  const moyAvant = calcMoy(avantVals);
+  const moyApres = calcMoy(apresVals);
+  const totalAvant = avantVals.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+  const totalApres = apresVals.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+  const hasAvant = avantVals.some(v=>v!==null&&v!==undefined&&v!=='');
+  const hasApres = apresVals.some(v=>v!==null&&v!==undefined&&v!=='');
+  const prog = (moyAvant && moyApres) ? (moyApres - moyAvant).toFixed(2) : '—';
+  const progNum = parseFloat(prog);
+  const moyQSat = calcMoy(row.satisfaction);
+  const totalSat = row.satisfaction.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+  const hasSat = row.satisfaction.some(v=>v!==null&&v!==undefined&&v!=='');
+  const tauxSat = moyQSat ? Math.round((moyQSat/4)*100) + '%' : '—';
+  const tauxSatNum = moyQSat ? Math.round((moyQSat/4)*100) : null;
+  let appreciation = '—';
+  if(tauxSatNum !== null) {
+    appreciation = tauxSatNum>=85 ? 'Très satisfait ★★' : tauxSatNum>=70 ? 'Satisfait ★' : tauxSatNum>=50 ? 'Moyennement satisfait' : 'Peu satisfait ⚠';
+  }
+
+  const progColor = progNum > 0 ? '#166534' : progNum < 0 ? '#991b1b' : '#1e40af';
+
+  tr.innerHTML = `
+    <td class="row-num">${i+1}</td>
+    <td><input class="matricule-input" value="${row.matricule||''}" placeholder="Ex: 049Y" oninput="onFroidMatricule(this,${i})" style="text-transform:uppercase;"></td>
+    <td class="td-info">${agent ? agent.nom : (row.matricule ? '<span class="no-match">Inconnu</span>' : '')}</td>
+    <td class="td-info td-num">${agent ? agent.cat : ''}</td>
+    <td class="td-info">${agent ? agent.fn : ''}</td>
+    <td class="td-info td-num"><span class="badge-dir">${agent ? agent.dir : ''}</span></td>
+    ${Array(nComp).fill(0).map((_,j)=>`<td class="td-num froid-td-blue"><input class="note-input note-input-blue" type="number" min="1" max="4" step="1" value="${row.avant[j]||''}" placeholder="—" oninput="onFroidNote(this,${i},'avant',${j})" style="width:58px;"></td>`).join('')}
+    <td class="td-num" style="background:#e8f4ff;font-weight:700;">${moyAvant?moyAvant.toFixed(1):'—'}</td>
+    <td class="td-num" style="background:#e8f4ff;font-weight:700;">${hasAvant?totalAvant+' / '+(nComp*4):'—'}</td>
+    ${Array(nComp).fill(0).map((_,j)=>`<td class="td-num froid-td-green"><input class="note-input note-input-green" type="number" min="1" max="4" step="1" value="${row.apres[j]||''}" placeholder="—" oninput="onFroidNote(this,${i},'apres',${j})" style="width:58px;"></td>`).join('')}
+    <td class="td-num" style="background:#e8fff0;font-weight:700;">${moyApres?moyApres.toFixed(1):'—'}</td>
+    <td class="td-num" style="background:#e8fff0;font-weight:700;">${hasApres?totalApres+' / '+(nComp*4):'—'}</td>
+    <td class="td-num" style="background:#e8fff0;font-weight:700;color:${progColor};">${prog !== '—' ? (progNum >= 0 ? '+' : '') + prog : '—'}</td>
+    ${row.satisfaction.map((s,j)=>`<td class="td-num froid-td-purple"><input class="note-input note-input-purple" type="number" min="1" max="4" step="1" value="${s||''}" placeholder="—" oninput="onFroidNote(this,${i},'satisfaction',${j})" style="width:58px;"></td>`).join('')}
+    <td class="td-num" style="background:#f3e8ff;font-weight:700;">${hasSat?totalSat+' / 20':'—'}</td>
+    <td class="td-num" style="background:#f3e8ff;font-weight:700;">${tauxSat}</td>
+    <td class="td-num" style="background:#f3e8ff;font-size:11px;font-weight:600;">${appreciation}</td>
+    <td><textarea class="text-input" rows="2" placeholder="Suggestions..." oninput="onFroidText(this,${i})">${row.suggestions||''}</textarea></td>
+    <td style="text-align:center;"><button class="btn-row-delete" title="Supprimer cette ligne" onclick="deleteFroidRow(${i})">🗑</button></td>
+  `;
+  return tr;
+}
+function deleteFroidRow(i) {
+  const d = froidData[currentFroidId];
+  if(!confirm('Supprimer cette ligne participant ?')) return;
+  d.rows.splice(i,1);
+  if(d.rows.length === 0) d.rows.push(emptyFroidRow());
+  saveStorage();
+  renderFroidTable();
+}
+function onFroidMatricule(inp, i) {
+  const d = froidData[currentFroidId];
+  d.rows[i].matricule = inp.value.toUpperCase();
+  saveStorage();
+  const tr = inp.closest('tr');
+  const agent = getAgent(inp.value.toUpperCase());
+  const cells = tr.querySelectorAll('td.td-info');
+  cells[0].textContent = agent ? agent.nom : (inp.value ? '— Inconnu —' : '');
+  cells[1].textContent = agent ? agent.cat : '';
+  cells[2].textContent = agent ? agent.fn : '';
+  cells[3].innerHTML = agent ? `<span class="badge-dir">${agent.dir}</span>` : '';
+}
+function onFroidNote(inp, i, field, j) {
+  const v = parseInt(inp.value);
+  const d = froidData[currentFroidId];
+  if(inp.value === '') { d.rows[i][field][j] = null; inp.classList.remove('invalid'); }
+  else if(isNaN(v) || v < 1 || v > 4) { inp.classList.add('invalid'); return; }
+  else { d.rows[i][field][j] = v; inp.classList.remove('invalid'); }
+  saveStorage();
+  // Refresh the row
+  const comps = d.competences.filter(c=>c.trim());
+  const newRow = buildFroidRow(d.rows[i], i, comps);
+  inp.closest('tr').replaceWith(newRow);
+}
+function onFroidText(inp, i) { froidData[currentFroidId].rows[i].suggestions = inp.value; saveStorage(); }
+function addFroidRow() { froidData[currentFroidId].rows.push(emptyFroidRow()); saveStorage(); renderFroidTable(); }
+function addFroidRows(n) { for(let i=0;i<n;i++) froidData[currentFroidId].rows.push(emptyFroidRow()); saveStorage(); renderFroidTable(); }
+
+// ============================================================
+//  FROID — DASHBOARD
+// ============================================================
+function renderFroidDashboard() {
+  const d = froidData[currentFroidId];
+  if(!d) return;
+  const comps = d.competences.filter(c=>c.trim());
+  const nComp = comps.length;
+  const rows = d.rows.filter(r => r.matricule && getAgent(r.matricule));
+
+  document.getElementById('dash-froid-title').textContent = 'Tableau de bord — ' + (d.titre || 'Formation sans titre');
+  document.getElementById('dash-froid-sub').textContent = (d.organisme?d.organisme+' — ':'')+(d.lieu||'');
+
+  const moyAvants = rows.map(r => calcMoy(r.avant.slice(0,nComp))).filter(v=>v);
+  const moyApres = rows.map(r => calcMoy(r.apres.slice(0,nComp))).filter(v=>v);
+  const moyQSats = rows.map(r => calcMoy(r.satisfaction)).filter(v=>v);
+  const moyA = moyAvants.length ? moyAvants.reduce((s,v)=>s+v,0)/moyAvants.length : 0;
+  const moyP = moyApres.length ? moyApres.reduce((s,v)=>s+v,0)/moyApres.length : 0;
+  const prog = moyA && moyP ? moyP - moyA : 0;
+  const moyS = moyQSats.length ? moyQSats.reduce((s,v)=>s+v,0)/moyQSats.length : 0;
+
+  document.getElementById('froid-kpis').innerHTML = `
+    <div class="stat-card info"><div class="stat-label">Participants évalués</div><div class="stat-value">${rows.length}</div></div>
+    <div class="stat-card info"><div class="stat-label">Niveau moyen avant</div><div class="stat-value">${moyA?moyA.toFixed(1):'—'}</div><div class="stat-sub">sur 4</div></div>
+    <div class="stat-card success"><div class="stat-label">Niveau moyen après</div><div class="stat-value">${moyP?moyP.toFixed(1):'—'}</div><div class="stat-sub">sur 4</div></div>
+    <div class="stat-card ${prog>0?'success':'warning'}"><div class="stat-label">Progression moyenne</div><div class="stat-value">${prog?(prog>0?'+':'')+prog.toFixed(2):'—'}</div></div>
+    <div class="stat-card warning"><div class="stat-label">Taux satisfaction moyen</div><div class="stat-value">${moyS?Math.round((moyS/4)*100)+'%':'—'}</div></div>
+    <div class="stat-card success"><div class="stat-label">Agents très satisfaits</div><div class="stat-value">${rows.filter(r=>calcMoy(r.satisfaction)>=3).length}</div><div class="stat-sub">participants ≥ 75%</div></div>
+  `;
+
+  // Comp chart (avant vs après)
+  destroyChart('froid-comp-chart');
+  if(nComp > 0 && rows.length > 0) {
+    const compMoyAvant = comps.map((_,j) => { const vs=rows.map(r=>r.avant[j]).filter(v=>v); return vs.length?vs.reduce((s,v)=>s+v,0)/vs.length:0; });
+    const compMoyApres = comps.map((_,j) => { const vs=rows.map(r=>r.apres[j]).filter(v=>v); return vs.length?vs.reduce((s,v)=>s+v,0)/vs.length:0; });
+    new Chart(document.getElementById('froid-comp-chart'), {
+      type: 'bar',
+      data: {
+        labels: comps.map(c=>c.length>25?c.substring(0,22)+'...':c),
+        datasets: [
+          { label: 'Avant formation', data: compMoyAvant.map(v=>parseFloat(v.toFixed(2))), backgroundColor: '#93c5fd', borderColor: '#3b82f6', borderWidth: 1.5 },
+          { label: 'Après formation', data: compMoyApres.map(v=>parseFloat(v.toFixed(2))), backgroundColor: '#86efac', borderColor: '#22c55e', borderWidth: 1.5 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: { y: { min:0, max:4, ticks:{stepSize:1} }, x: { ticks:{font:{size:11,family:'Aptos'}} } },
+        plugins: { legend: { position:'bottom', labels:{font:{family:'Aptos',size:12}} } }
+      }
+    });
+  }
+
+  // Questions satisfaction bars
+  const satMoys = QUESTIONS_FROID.map((_,j) => { const vs=rows.map(r=>r.satisfaction[j]).filter(v=>v); return vs.length?vs.reduce((s,v)=>s+v,0)/vs.length:0; });
+  document.getElementById('froid-sat-bars').innerHTML = QUESTIONS_FROID.map((q,j) => {
+    const v = satMoys[j]; const pct = (v/4)*100;
+    const short = q.length > 45 ? q.substring(0,42)+'...' : q;
+    return `<div class="prog-row" style="margin-bottom:14px;"><div class="prog-label" style="width:250px;font-size:11px;" title="${q}">${short}</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%;background:#7c3aed;"></div></div><div class="prog-val">${v?Math.round(pct)+'%':'—'}</div></div>`;
+  }).join('');
+
+  // Participants table
+  const tbody = document.getElementById('froid-participants-body');
+  tbody.innerHTML = rows.map(r => {
+    const a = getAgent(r.matricule);
+    const mA = calcMoy(r.avant.slice(0,nComp)); const mP = calcMoy(r.apres.slice(0,nComp));
+    const pr = mA && mP ? mP - mA : null;
+    const mS = calcMoy(r.satisfaction);
+    const sat = mS ? Math.round((mS/4)*100) : null;
+    const apprec = sat ? (sat>=80?'Très satisfait ★':sat>=60?'Satisfait':'Peu satisfait ⚠') : '—';
+    return `<tr>
+      <td>${a?a.nom:r.matricule}</td>
+      <td><span class="badge-dir">${a?a.dir:''}</span></td>
+      <td style="text-align:center;">${mA?mA.toFixed(1):'—'}</td>
+      <td style="text-align:center;">${mP?mP.toFixed(1):'—'}</td>
+      <td style="text-align:center;font-weight:600;color:${pr!==null&&pr>0?'#166534':pr<0?'#991b1b':'#1e40af'}">${pr!==null?(pr>0?'+':'')+pr.toFixed(2):'—'}</td>
+      <td style="text-align:center;">${sat?sat+'%':'—'}</td>
+      <td style="text-align:center;font-size:12px;">${apprec}</td>
+      <td style="font-size:12px;">${r.suggestions||'—'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;padding:24px;color:#888;">Aucun participant enregistré</td></tr>';
+}
+
+// ============================================================
+//  SYNTHESE
+// ============================================================
+function renderSynthese() {
+  // Filter by current year
+  const chaudForms = Object.values(chaudData).filter(d=>d.year===currentYear);
+  const froidForms = Object.values(froidData).filter(d=>d.year===currentYear);
+  const totalChaudPart = chaudForms.reduce((s,d)=>s+d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).length,0);
+  const totalFroidPart = froidForms.reduce((s,d)=>s+d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).length,0);
+  const allChaudMoys = chaudForms.flatMap(d=>d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).map(r=>calcMoy(r.notes)).filter(v=>v));
+  const allFroidSats = froidForms.flatMap(d=>d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).map(r=>calcMoy(r.satisfaction)).filter(v=>v));
+  const moyChaud = allChaudMoys.length ? allChaudMoys.reduce((s,v)=>s+v,0)/allChaudMoys.length : 0;
+  const moyFroidSat = allFroidSats.length ? allFroidSats.reduce((s,v)=>s+v,0)/allFroidSats.length : 0;
+
+  document.getElementById('synth-kpis').innerHTML = `
+    <div class="synth-kpi accent"><div class="synth-kpi-val">${chaudForms.filter(d=>d.titre).length}</div><div class="synth-kpi-lbl">Formations à chaud saisies (${currentYear})</div></div>
+    <div class="synth-kpi accent"><div class="synth-kpi-val">${totalChaudPart}</div><div class="synth-kpi-lbl">Évaluations à chaud enregistrées</div></div>
+    <div class="synth-kpi ok"><div class="synth-kpi-val">${froidForms.filter(d=>d.titre).length}</div><div class="synth-kpi-lbl">Formations à froid saisies (${currentYear})</div></div>
+    <div class="synth-kpi ok"><div class="synth-kpi-val">${totalFroidPart}</div><div class="synth-kpi-lbl">Évaluations à froid enregistrées</div></div>
+    <div class="synth-kpi warn"><div class="synth-kpi-val">${moyChaud?Math.round((moyChaud/4)*100)+'%':'—'}</div><div class="synth-kpi-lbl">Satisfaction à chaud (global)</div></div>
+    <div class="synth-kpi warn"><div class="synth-kpi-val">${moyFroidSat?Math.round((moyFroidSat/4)*100)+'%':'—'}</div><div class="synth-kpi-lbl">Satisfaction à froid (global)</div></div>
+  `;
+
+  // Chaud chart
+  const chaudLabels = chaudForms.filter(d=>d.titre).map(d=>d.ref||'?');
+  const chaudVals = chaudForms.filter(d=>d.titre).map(d => {
+    const rows = d.rows.filter(r=>r.matricule&&getAgent(r.matricule));
+    const moys = rows.map(r=>calcMoy(r.notes)).filter(v=>v);
+    return moys.length ? parseFloat((moys.reduce((s,v)=>s+v,0)/moys.length).toFixed(2)) : 0;
+  });
+  destroyChart('synth-chaud-chart');
+  if(chaudLabels.length) {
+    new Chart(document.getElementById('synth-chaud-chart'), {
+      type: 'bar',
+      data: { labels: chaudLabels, datasets: [{ label: 'Moyenne /4', data: chaudVals, backgroundColor: '#1e4d8c', borderRadius: 3 }] },
+      options: { responsive:true, maintainAspectRatio:false, scales:{y:{min:0,max:4}}, plugins:{legend:{display:false}} }
+    });
+  }
+
+  // Froid chart
+  const froidLabels = froidForms.filter(d=>d.titre).map(d=>d.ref||'?');
+  const froidBefore = froidForms.filter(d=>d.titre).map(d => {
+    const rows=d.rows.filter(r=>r.matricule&&getAgent(r.matricule)); const nc=d.competences.filter(c=>c.trim()).length||1;
+    const vs=rows.map(r=>calcMoy(r.avant.slice(0,nc))).filter(v=>v);
+    return vs.length?parseFloat((vs.reduce((s,v)=>s+v,0)/vs.length).toFixed(2)):0;
+  });
+  const froidAfter = froidForms.filter(d=>d.titre).map(d => {
+    const rows=d.rows.filter(r=>r.matricule&&getAgent(r.matricule)); const nc=d.competences.filter(c=>c.trim()).length||1;
+    const vs=rows.map(r=>calcMoy(r.apres.slice(0,nc))).filter(v=>v);
+    return vs.length?parseFloat((vs.reduce((s,v)=>s+v,0)/vs.length).toFixed(2)):0;
+  });
+  destroyChart('synth-froid-chart');
+  if(froidLabels.length) {
+    new Chart(document.getElementById('synth-froid-chart'), {
+      type: 'bar',
+      data: { labels: froidLabels, datasets: [
+        { label: 'Avant', data: froidBefore, backgroundColor: '#93c5fd' },
+        { label: 'Après', data: froidAfter, backgroundColor: '#22c55e' }
+      ]},
+      options: { responsive:true, maintainAspectRatio:false, scales:{y:{min:0,max:4}}, plugins:{legend:{position:'bottom'}} }
+    });
+  }
+
+  // Chaud recap table
+  const synthChaudBody = document.getElementById('synth-chaud-body');
+  synthChaudBody.innerHTML = chaudForms.filter(d=>d.titre).map(d => {
+    const rows=d.rows.filter(r=>r.matricule&&getAgent(r.matricule));
+    const moys=rows.map(r=>calcMoy(r.notes)).filter(v=>v);
+    const mG=moys.length?moys.reduce((s,v)=>s+v,0)/moys.length:0;
+    const critMoys=Array(9).fill(0).map((_,j)=>{const vs=rows.map(r=>r.notes[j]).filter(v=>v);return vs.length?vs.reduce((s,v)=>s+v,0)/vs.length:0;});
+    const apprec=mG>=3.5?'Très bien ★★':mG>=3?'Bien ★':mG>=2?'Moyen':'Insuffisant';
+    return `<tr>
+      <td>${d.ref||'—'}</td>
+      <td><strong>${d.titre}</strong></td>
+      <td>${d.organisme||'—'}</td>
+      <td>${d.dateDebut||'—'}</td>
+      <td style="text-align:center;">${rows.length}</td>
+      <td>${noteBadge(mG)}</td>
+      <td style="text-align:center;">${critMoys[0]?critMoys[0].toFixed(1):'—'}</td>
+      <td style="text-align:center;">${critMoys[1]?critMoys[1].toFixed(1):'—'}</td>
+      <td style="text-align:center;">${critMoys[3]?critMoys[3].toFixed(1):'—'}</td>
+      <td style="text-align:center;">${critMoys[5]?critMoys[5].toFixed(1):'—'}</td>
+      <td style="text-align:center;">${critMoys[8]?critMoys[8].toFixed(1):'—'}</td>
+      <td style="font-size:12px;">${apprec}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="12" style="text-align:center;padding:24px;color:#888;">Aucune formation à chaud enregistrée pour '+currentYear+'</td></tr>';
+
+  // Froid recap table
+  const synthFroidBody = document.getElementById('synth-froid-body');
+  synthFroidBody.innerHTML = froidForms.filter(d=>d.titre).map(d => {
+    const rows=d.rows.filter(r=>r.matricule&&getAgent(r.matricule));
+    const nc=d.competences.filter(c=>c.trim()).length||1;
+    const vsA=rows.map(r=>calcMoy(r.avant.slice(0,nc))).filter(v=>v);
+    const vsP=rows.map(r=>calcMoy(r.apres.slice(0,nc))).filter(v=>v);
+    const vsS=rows.map(r=>calcMoy(r.satisfaction)).filter(v=>v);
+    const mA=vsA.length?vsA.reduce((s,v)=>s+v,0)/vsA.length:0;
+    const mP=vsP.length?vsP.reduce((s,v)=>s+v,0)/vsP.length:0;
+    const mS=vsS.length?vsS.reduce((s,v)=>s+v,0)/vsS.length:0;
+    const prog=mA&&mP?mP-mA:null;
+    const apprec=mS>=3?'Très satisfait ★':mS>=2?'Satisfait':'Peu satisfait ⚠';
+    return `<tr>
+      <td>${d.ref||'—'}</td>
+      <td><strong>${d.titre}</strong></td>
+      <td>${d.organisme||'—'}</td>
+      <td style="text-align:center;">${rows.length}</td>
+      <td style="text-align:center;">${mA?mA.toFixed(1):'—'}</td>
+      <td style="text-align:center;">${mP?mP.toFixed(1):'—'}</td>
+      <td style="text-align:center;font-weight:600;color:${prog>0?'#166534':prog<0?'#991b1b':'#888'}">${prog!==null?(prog>0?'+':'')+prog.toFixed(2):'—'}</td>
+      <td style="text-align:center;">${mS?Math.round((mS/4)*100)+'%':'—'}</td>
+      <td style="font-size:12px;">${apprec}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:24px;color:#888;">Aucune formation à froid enregistrée pour '+currentYear+'</td></tr>';
+
+  renderSynthesePart(chaudForms, froidForms);
+}
+
+// ============================================================
+//  SYNTHESE — SUIVI PAR PARTICIPANT
+// ============================================================
+function renderSynthesePart(chaudForms, froidForms) {
+  document.getElementById('synth-part-year-c').textContent = currentYear;
+  document.getElementById('synth-part-year-f').textContent = currentYear;
+
+  // --- CHAUD : agent -> {nom,dir,perFormation:{ref:moy}, sum, count}
+  const chForms = chaudForms.filter(d=>d.titre);
+  const partsC = {};
+  chForms.forEach(d => {
+    d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).forEach(r => {
+      const a = getAgent(r.matricule);
+      const moy = calcMoy(r.notes);
+      if(moy === null) return;
+      const mat = r.matricule.toUpperCase();
+      if(!partsC[mat]) partsC[mat] = { nom:a.nom, dir:a.dir, cat:a.cat, byForm:{}, sum:0, count:0 };
+      partsC[mat].byForm[d.ref] = moy;
+      partsC[mat].sum += moy;
+      partsC[mat].count++;
+    });
+  });
+  const headC = document.getElementById('synth-part-chaud-head');
+  const bodyC = document.getElementById('synth-part-chaud-body');
+  if(chForms.length === 0 || Object.keys(partsC).length === 0) {
+    headC.innerHTML = '<th>Nom & Prénoms</th><th>Direction</th><th>Nb formations</th><th>Moyenne générale</th>';
+    bodyC.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#888;">Aucune évaluation à chaud enregistrée pour '+currentYear+'</td></tr>';
+  } else {
+    headC.innerHTML = `<th>Nom & Prénoms</th><th>Direction</th>` + chForms.map(d=>`<th title="${d.titre}">${d.ref}</th>`).join('') + `<th>Nb formations</th><th>Moyenne générale</th>`;
+    const rows = Object.values(partsC).sort((a,b)=>a.nom.localeCompare(b.nom));
+    bodyC.innerHTML = rows.map(p => {
+      const moyGen = p.count ? (p.sum/p.count) : 0;
+      return `<tr>
+        <td>${p.nom}</td>
+        <td><span class="badge-dir">${p.dir}</span></td>
+        ${chForms.map(d => `<td>${p.byForm[d.ref]!==undefined ? noteBadge(p.byForm[d.ref]) : '—'}</td>`).join('')}
+        <td>${p.count}</td>
+        <td class="gen-avg">${noteBadge(moyGen)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // --- FROID : agent -> progression par formation
+  const frForms = froidForms.filter(d=>d.titre);
+  const partsF = {};
+  frForms.forEach(d => {
+    const nc = d.competences.filter(c=>c.trim()).length || 1;
+    d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).forEach(r => {
+      const a = getAgent(r.matricule);
+      const mA = calcMoy(r.avant.slice(0,nc));
+      const mP = calcMoy(r.apres.slice(0,nc));
+      if(mA === null && mP === null) return;
+      const prog = (mA!==null && mP!==null) ? (mP-mA) : null;
+      const mat = r.matricule.toUpperCase();
+      if(!partsF[mat]) partsF[mat] = { nom:a.nom, dir:a.dir, byForm:{}, sum:0, count:0 };
+      partsF[mat].byForm[d.ref] = prog;
+      if(prog !== null) { partsF[mat].sum += prog; partsF[mat].count++; }
+    });
+  });
+  const headF = document.getElementById('synth-part-froid-head');
+  const bodyF = document.getElementById('synth-part-froid-body');
+  if(frForms.length === 0 || Object.keys(partsF).length === 0) {
+    headF.innerHTML = '<th>Nom & Prénoms</th><th>Direction</th><th>Nb formations</th><th>Progression générale</th>';
+    bodyF.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:#888;">Aucune évaluation à froid enregistrée pour '+currentYear+'</td></tr>';
+  } else {
+    headF.innerHTML = `<th>Nom & Prénoms</th><th>Direction</th>` + frForms.map(d=>`<th title="${d.titre}">${d.ref}</th>`).join('') + `<th>Nb formations</th><th>Progression générale</th>`;
+    const rows = Object.values(partsF).sort((a,b)=>a.nom.localeCompare(b.nom));
+    bodyF.innerHTML = rows.map(p => {
+      const progGen = p.count ? (p.sum/p.count) : null;
+      const progGenColor = progGen>0?'#166534':progGen<0?'#991b1b':'#888';
+      return `<tr>
+        <td>${p.nom}</td>
+        <td><span class="badge-dir">${p.dir}</span></td>
+        ${frForms.map(d => {
+          const v = p.byForm[d.ref];
+          if(v===undefined) return '<td>—</td>';
+          const c = v>0?'#166534':v<0?'#991b1b':'#888';
+          return `<td style="color:${c};font-weight:600;">${v!==null?(v>=0?'+':'')+v.toFixed(2):'—'}</td>`;
+        }).join('')}
+        <td>${p.count}</td>
+        <td class="gen-avg" style="color:${progGenColor};">${progGen!==null?(progGen>=0?'+':'')+progGen.toFixed(2):'—'}</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+// ============================================================
+//  HOME STATS
+// ============================================================
+function updateHomeStats() {
+  document.getElementById('home-year-lbl').textContent = currentYear;
+  const cd=Object.values(chaudData).filter(d=>d.year===currentYear); const fd=Object.values(froidData).filter(d=>d.year===currentYear);
+  const pC=cd.reduce((s,d)=>s+d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).length,0);
+  const pF=fd.reduce((s,d)=>s+d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).length,0);
+  const allM=cd.flatMap(d=>d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).map(r=>calcMoy(r.notes)).filter(v=>v));
+  const allS=fd.flatMap(d=>d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).map(r=>calcMoy(r.satisfaction)).filter(v=>v));
+  const moyC=allM.length?allM.reduce((s,v)=>s+v,0)/allM.length:0;
+  const moyF=allS.length?allS.reduce((s,v)=>s+v,0)/allS.length:0;
+  document.getElementById('h-nb-form-chaud').textContent = cd.filter(d=>d.titre).length;
+  document.getElementById('h-nb-part-chaud').textContent = pC;
+  document.getElementById('h-nb-form-froid').textContent = fd.filter(d=>d.titre).length;
+  document.getElementById('h-nb-part-froid').textContent = pF;
+  document.getElementById('h-sat-chaud').textContent = moyC?moyC.toFixed(1):'—';
+  document.getElementById('h-sat-froid').textContent = moyF?moyF.toFixed(1):'—';
+}
+
+// ============================================================
+//  EXPORT
+// ============================================================
+// ============================================================
+//  EXPORT PAGE INIT
+// ============================================================
+function renderExportPage() {
+  document.getElementById('export-year-lbl').textContent = currentYear;
+  document.getElementById('export-year-lbl2').textContent = currentYear;
+  document.getElementById('export-year-lbl3').textContent = currentYear;
+
+  const selC = document.getElementById('export-chaud-select');
+  selC.innerHTML = chaudIdsForYear().map(id => {
+    const d = chaudData[id];
+    return `<option value="${id}">${d.ref||'—'} — ${d.titre || '(sans titre)'}</option>`;
+  }).join('') || '<option value="">Aucune formation</option>';
+  if(currentChaudId) selC.value = currentChaudId;
+
+  const selF = document.getElementById('export-froid-select');
+  selF.innerHTML = froidIdsForYear().map(id => {
+    const d = froidData[id];
+    return `<option value="${id}">${d.ref||'—'} — ${d.titre || '(sans titre)'}</option>`;
+  }).join('') || '<option value="">Aucune formation</option>';
+  if(currentFroidId) selF.value = currentFroidId;
+}
+
+// ============================================================
+//  EXPORT CSV (filtré par année courante)
+// ============================================================
+function exportCSV(type) {
+  let csv = '', fn = '';
+  if(type === 'chaud') {
+    fn = 'evaluations_chaud_' + currentYear + '.csv';
+    csv = 'Année;Référence;Titre;Organisme;Date début;Date fin;Durée;Lieu;Matricule;Nom;Catégorie;Fonction;Direction;Salle;Matériels;Pause;Méthodologie;Cas pratiques;Qualité;Cohérence durée;Cohérence objectifs;Satisfaction;Moyenne;Aspects;Suggestions\n';
+    Object.values(chaudData).filter(d=>d.year===currentYear).forEach(d => {
+      d.rows.filter(r=>r.matricule).forEach(r => {
+        const a=getAgent(r.matricule)||{};
+        const m=calcMoy(r.notes);
+        csv += [currentYear,d.ref,d.titre,d.dateDebut,d.dateFin,d.duree,d.lieu,r.matricule,a.nom||'',a.cat||'',a.fn||'',a.dir||'',...r.notes.map(n=>n||''),m?m.toFixed(2):'',(r.aspects||'').replace(/;/g,','),(r.suggestions||'').replace(/;/g,',')].join(';') + '\n';
+      });
+    });
+    if(!Object.values(chaudData).some(d=>d.year===currentYear && d.rows.some(r=>r.matricule))) {
+      showToast('Aucune donnée à chaud pour ' + currentYear); return;
+    }
+  } else {
+    fn = 'evaluations_froid_' + currentYear + '.csv';
+    csv = 'Année;Référence;Titre;Organisme;Lieu;Date début;Date fin;Durée;Matricule;Nom;Catégorie;Fonction;Direction;Total Avant;Total Après;Moy.Avant;Moy.Après;Progression;Total Satisfaction /20;Taux satisfaction;Appréciation;Suggestions\n';
+    Object.values(froidData).filter(d=>d.year===currentYear).forEach(d => {
+      const nc=d.competences.filter(c=>c.trim()).length||1;
+      d.rows.filter(r=>r.matricule).forEach(r => {
+        const a=getAgent(r.matricule)||{};
+        const avantVals=r.avant.slice(0,nc); const apresVals=r.apres.slice(0,nc);
+        const mA=calcMoy(avantVals); const mP=calcMoy(apresVals); const mS=calcMoy(r.satisfaction);
+        const totA=avantVals.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+        const totP=apresVals.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+        const totS=r.satisfaction.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+        const prog=mA&&mP?mP-mA:null;
+        const tauxNum = mS?Math.round((mS/4)*100):null;
+        const apprec = tauxNum===null?'':(tauxNum>=85?'Très satisfait':tauxNum>=70?'Satisfait':tauxNum>=50?'Moyennement satisfait':'Peu satisfait');
+        csv += [currentYear,d.ref,d.titre,d.organisme,d.lieu,d.dateDebut,d.dateFin,d.duree,r.matricule,a.nom||'',a.cat||'',a.fn||'',a.dir||'',totA+'/'+(nc*4),totP+'/'+(nc*4),mA?mA.toFixed(1):'',mP?mP.toFixed(1):'',prog!==null?prog.toFixed(2):'',totS+'/20',tauxNum!==null?tauxNum+'%':'',apprec,(r.suggestions||'').replace(/;/g,',')].join(';') + '\n';
+      });
+    });
+    if(!Object.values(froidData).some(d=>d.year===currentYear && d.rows.some(r=>r.matricule))) {
+      showToast('Aucune donnée à froid pour ' + currentYear); return;
+    }
+  }
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = fn;
+  link.click();
+  showToast('Export CSV réalisé avec succès','success');
+}
+function exportJSON() {
+  const data = { chaud: chaudData, froid: froidData, exported: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'anare_evaluations_backup_' + new Date().toISOString().split('T')[0] + '.json';
+  link.click();
+  showToast('Sauvegarde JSON téléchargée','success');
+}
+function shareByEmail() {
+  const filename = 'anare_evaluations_backup_' + new Date().toISOString().split('T')[0] + '.json';
+  const data = { chaud: chaudData, froid: froidData, exported: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+
+  const subject = encodeURIComponent('Évaluations des formations ANARE-CI — Année ' + currentYear);
+  const body = encodeURIComponent(
+    "Bonjour,\n\n" +
+    "Veuillez trouver les données des évaluations de formation (année " + currentYear + ") dans le fichier joint : " + filename + "\n\n" +
+    "Pour consulter et modifier ces données :\n" +
+    "1. Ouvrez l'application \"Évaluations des Formations - ANARE-CI\" (fichier HTML reçu séparément).\n" +
+    "2. Allez dans l'onglet \"Export & Impression\".\n" +
+    "3. Cliquez sur \"Restaurer des données\" et sélectionnez le fichier " + filename + " ci-joint.\n" +
+    "4. Toutes les évaluations saisies s'afficheront, et vous pourrez les consulter ou les compléter.\n\n" +
+    "N'oubliez pas, après vos modifications, de me renvoyer votre propre fichier de sauvegarde (bouton \"Envoyer par email\") afin que je puisse intégrer vos changements.\n\n" +
+    "Cordialement."
+  );
+
+  showToast('📥 Fichier téléchargé — pièce jointe à ajouter manuellement dans l\'email qui s\'ouvre','success');
+  setTimeout(() => {
+    window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+  }, 800);
+}
+function importJSON() { document.getElementById('import-file').click(); }
+function handleImport(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(data.chaud) chaudData = data.chaud;
+      if(data.froid) froidData = data.froid;
+      saveStorage();
+      initChaud(); initFroid(); updateHomeStats();
+      showToast('Données restaurées avec succès','success');
+    } catch(err) { showToast('Erreur : fichier invalide'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+function resetAll() {
+  if(!confirm('Effacer TOUTES les données ? Cette action est irréversible.')) return;
+  localStorage.removeItem('anare_chaud_2025');
+  localStorage.removeItem('anare_froid_2025');
+  chaudData = {}; froidData = {};
+  initChaud(); initFroid(); updateHomeStats();
+  showToast('Données réinitialisées');
+}
+// ============================================================
+//  IMPRESSION — RAPPORTS COMPLETS (fenêtre dédiée)
+// ============================================================
+function printDocStart(title) {
+  return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${title}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Aptos:wght@300;400;500;600;700&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Aptos','Segoe UI',Arial,sans-serif; font-size:12px; color:#0d1b2a; padding:24px; }
+    .ph { display:flex; align-items:center; gap:16px; border-bottom:3px solid #1e4d8c; padding-bottom:12px; margin-bottom:16px; }
+    .ph img { height:50px; }
+    .ph .t1 { font-size:17px; font-weight:700; color:#0d1b2a; }
+    .ph .t2 { font-size:11px; color:#4a6380; margin-top:2px; }
+    .ph .year { margin-left:auto; background:#1e4d8c; color:#fff; padding:5px 16px; border-radius:16px; font-size:12px; font-weight:700; }
+    h2.sec { font-size:13px; color:#0d1b2a; text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid #0d1b2a; padding-bottom:4px; margin:18px 0 10px; }
+    .meta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
+    .meta-box { border:1px solid #c8d6e8; border-radius:5px; padding:8px 10px; }
+    .meta-box .l { font-size:9px; font-weight:700; text-transform:uppercase; color:#7a96b2; letter-spacing:0.4px; }
+    .meta-box .v { font-size:12px; font-weight:600; color:#0d1b2a; margin-top:2px; }
+    .kpis { display:flex; gap:10px; margin-bottom:14px; }
+    .kpi { flex:1; border:1px solid #c8d6e8; border-radius:5px; padding:10px; text-align:center; }
+    .kpi .v { font-size:20px; font-weight:700; color:#0d1b2a; }
+    .kpi .l { font-size:9px; color:#4a6380; text-transform:uppercase; margin-top:3px; letter-spacing:0.3px; }
+    table { width:100%; border-collapse:collapse; margin-bottom:14px; }
+    th { background:#0d1b2a; color:#fff; padding:5px 6px; font-size:9px; text-transform:uppercase; text-align:center; letter-spacing:0.3px; }
+    th.l, td.l { text-align:left !important; }
+    td { padding:5px 6px; border-bottom:1px solid #e8eef5; font-size:10px; text-align:center; vertical-align:middle; }
+    tr:nth-child(even) td { background:#f7fafd; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-weight:700; font-size:10px; }
+    .b4{background:#dcfce7;color:#166534;} .b3{background:#dbeafe;color:#1e40af;} .b2{background:#fef3c7;color:#854f0b;} .b1{background:#fee2e2;color:#991b1b;} .b0{background:#f1f5f9;color:#64748b;}
+    .footer { margin-top:24px; font-size:9px; color:#7a96b2; text-align:center; border-top:1px solid #e8eef5; padding-top:8px; }
+    @page { size: A4 landscape; margin: 10mm; }
+    @media print { body { padding:0; } }
+  </style></head><body>
+  <div class="ph"><img src="${LOGO_DATAURI}" alt="ANARE-CI"><div><div class="t1">Système d'Évaluation des Formations — ANARE-CI</div><div class="t2">Direction des Ressources Humaines — Procédure FORMATION Rév. 2/EN 004</div></div><div class="year">Année ${currentYear}</div></div>`;
+}
+function printDocEnd() {
+  return `<div class="footer">Document généré automatiquement le ${new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'})} — ANARE-CI</div>
+  <scr` + `ipt>window.onload = function(){ setTimeout(function(){ window.print(); }, 300); };</scr` + `ipt>
+  </body></html>`;
+}
+function noteBadgePrint(v) {
+  if(v === null || v === undefined || v === '' || isNaN(v)) return '<span class="badge b0">—</span>';
+  const n = parseFloat(v);
+  const cls = n >= 3.5 ? 'b4' : n >= 2.5 ? 'b3' : n >= 1.5 ? 'b2' : 'b1';
+  return `<span class="badge ${cls}">${n.toFixed(2)}</span>`;
+}
+function openPrintWindow(html) {
+  const w = window.open('', '_blank');
+  if(!w) { showToast('Veuillez autoriser les fenêtres popup pour imprimer'); return; }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// --- RAPPORT À CHAUD (formation sélectionnée dans la page Export) ---
+function printChaudReport() {
+  const id = document.getElementById('export-chaud-select').value;
+  const d = chaudData[id];
+  if(!d) { showToast('Aucune formation sélectionnée'); return; }
+  const rows = d.rows.filter(r=>r.matricule && getAgent(r.matricule));
+  const moys = rows.map(r=>calcMoy(r.notes)).filter(v=>v);
+  const mG = moys.length ? moys.reduce((s,v)=>s+v,0)/moys.length : 0;
+  const critMoys = CRITERES_CHAUD.map((c,j)=>{ const vs=rows.map(r=>r.notes[j]).filter(v=>v); return vs.length?vs.reduce((s,v)=>s+v,0)/vs.length:0; });
+
+  let html = printDocStart('Rapport À Chaud — ' + (d.titre||d.ref));
+  html += `<h2 class="sec">Évaluation à Chaud — ${d.ref||'—'} : ${d.titre || '(sans titre)'}</h2>`;
+  html += `<div class="meta-grid">
+    <div class="meta-box"><div class="l">Organisme</div><div class="v">${d.organisme||'—'}</div></div>
+    <div class="meta-box"><div class="l">Formateur</div><div class="v">${d.formateur||'—'}</div></div>
+    <div class="meta-box"><div class="l">Lieu</div><div class="v">${d.lieu||'—'}</div></div>
+    <div class="meta-box"><div class="l">Dates</div><div class="v">${d.dateDebut||'—'} → ${d.dateFin||'—'} (${d.duree||'—'})</div></div>
+  </div>`;
+  html += `<div class="kpis">
+    <div class="kpi"><div class="v">${rows.length}</div><div class="l">Participants évalués</div></div>
+    <div class="kpi"><div class="v">${mG?mG.toFixed(2):'—'}</div><div class="l">Moyenne globale /4</div></div>
+    <div class="kpi"><div class="v">${mG?Math.round((mG/4)*100)+'%':'—'}</div><div class="l">Taux de satisfaction</div></div>
+    <div class="kpi"><div class="v">${rows.filter(r=>calcMoy(r.notes)>=3).length}</div><div class="l">Très satisfaits (≥3)</div></div>
+  </div>`;
+
+  html += `<h2 class="sec">Moyennes par critère</h2><table><tr>${CRITERES_CHAUD.map(c=>`<th>${c}</th>`).join('')}</tr><tr>${critMoys.map(v=>`<td>${noteBadgePrint(v)}</td>`).join('')}</tr></table>`;
+
+  html += `<h2 class="sec">Détail par participant</h2><table><tr>
+    <th class="l">Nom & Prénoms</th><th>Direction</th><th>Catégorie</th>
+    ${['Salle','Matériels','Pause','Méthodo.','Cas prat.','Qualité','Cohér.durée','Cohér.obj.','Satisfaction'].map(c=>`<th>${c}</th>`).join('')}
+    <th>Moyenne</th><th class="l">Aspects retenus</th><th class="l">Suggestions</th>
+  </tr>`;
+  html += rows.map(r => {
+    const a = getAgent(r.matricule);
+    return `<tr><td class="l">${a.nom}</td><td><span class="badge b3">${a.dir}</span></td><td>${a.cat}</td>
+      ${r.notes.map(n=>`<td>${noteBadgePrint(n)}</td>`).join('')}
+      <td>${noteBadgePrint(calcMoy(r.notes))}</td>
+      <td class="l">${r.aspects||'—'}</td><td class="l">${r.suggestions||'—'}</td></tr>`;
+  }).join('') || '<tr><td colspan="14" style="text-align:center;padding:16px;color:#888;">Aucun participant enregistré</td></tr>';
+  html += `</table>`;
+
+  html += printDocEnd();
+  openPrintWindow(html);
+}
+
+// --- RAPPORT À FROID (formation sélectionnée dans la page Export) ---
+function printFroidReport() {
+  const id = document.getElementById('export-froid-select').value;
+  const d = froidData[id];
+  if(!d) { showToast('Aucune formation sélectionnée'); return; }
+  const comps = d.competences.filter(c=>c.trim());
+  const nc = comps.length || 1;
+  const rows = d.rows.filter(r=>r.matricule && getAgent(r.matricule));
+
+  const moyAvants = rows.map(r=>calcMoy(r.avant.slice(0,nc))).filter(v=>v);
+  const moyApresArr = rows.map(r=>calcMoy(r.apres.slice(0,nc))).filter(v=>v);
+  const moyQSats = rows.map(r=>calcMoy(r.satisfaction)).filter(v=>v);
+  const moyA = moyAvants.length ? moyAvants.reduce((s,v)=>s+v,0)/moyAvants.length : 0;
+  const moyP = moyApresArr.length ? moyApresArr.reduce((s,v)=>s+v,0)/moyApresArr.length : 0;
+  const prog = moyA && moyP ? moyP - moyA : 0;
+  const moyS = moyQSats.length ? moyQSats.reduce((s,v)=>s+v,0)/moyQSats.length : 0;
+
+  let html = printDocStart('Rapport À Froid — ' + (d.titre||d.ref));
+  html += `<h2 class="sec">Évaluation à Froid — ${d.ref||'—'} : ${d.titre || '(sans titre)'}</h2>`;
+  html += `<div class="meta-grid">
+    <div class="meta-box"><div class="l">Organisme</div><div class="v">${d.organisme||'—'}</div></div>
+    <div class="meta-box"><div class="l">Lieu</div><div class="v">${d.lieu||'—'}</div></div>
+    <div class="meta-box"><div class="l">Dates</div><div class="v">${d.dateDebut||'—'} → ${d.dateFin||'—'} (${d.duree||'—'})</div></div>
+    <div class="meta-box"><div class="l">Compétences évaluées</div><div class="v" style="font-size:10px;">${comps.join(', ')||'—'}</div></div>
+  </div>`;
+  html += `<div class="kpis">
+    <div class="kpi"><div class="v">${rows.length}</div><div class="l">Participants</div></div>
+    <div class="kpi"><div class="v">${moyA?moyA.toFixed(2):'—'}</div><div class="l">Niveau moyen avant /4</div></div>
+    <div class="kpi"><div class="v">${moyP?moyP.toFixed(2):'—'}</div><div class="l">Niveau moyen après /4</div></div>
+    <div class="kpi"><div class="v">${prog?(prog>0?'+':'')+prog.toFixed(2):'—'}</div><div class="l">Progression moyenne</div></div>
+    <div class="kpi"><div class="v">${moyS?Math.round((moyS/4)*100)+'%':'—'}</div><div class="l">Taux satisfaction moyen</div></div>
+  </div>`;
+
+  html += `<h2 class="sec">Détail par participant</h2><table><tr>
+    <th class="l">Nom & Prénoms</th><th>Direction</th><th>Catégorie</th>
+    ${comps.map(c=>`<th>Avant<br>${c}</th>`).join('')}<th>Total Avant /${nc*4}</th>
+    ${comps.map(c=>`<th>Après<br>${c}</th>`).join('')}<th>Total Après /${nc*4}</th><th>Progression</th>
+    ${QUESTIONS_FROID.map((q,i)=>`<th>Q${i+1}</th>`).join('')}<th>Total /20</th><th>Taux Sat.</th><th>Appréciation</th><th class="l">Suggestions</th>
+  </tr>`;
+  html += rows.map(r => {
+    const a = getAgent(r.matricule);
+    const avantVals = r.avant.slice(0,nc); const apresVals = r.apres.slice(0,nc);
+    const mA = calcMoy(avantVals); const mP = calcMoy(apresVals);
+    const totA = avantVals.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+    const totP = apresVals.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+    const pr = (mA&&mP)?(mP-mA).toFixed(2):'—';
+    const mS = calcMoy(r.satisfaction);
+    const totS = r.satisfaction.filter(v=>v!==null&&v!==undefined&&v!=='').reduce((s,v)=>s+parseFloat(v),0);
+    const tauxNum = mS?Math.round((mS/4)*100):null;
+    const apprec = tauxNum===null?'—':(tauxNum>=85?'Très satisfait':tauxNum>=70?'Satisfait':tauxNum>=50?'Moyennement satisfait':'Peu satisfait');
+    return `<tr><td class="l">${a.nom}</td><td><span class="badge b3">${a.dir}</span></td><td>${a.cat}</td>
+      ${avantVals.map(v=>`<td>${v||'—'}</td>`).join('')}<td><strong>${totA}/${nc*4}</strong></td>
+      ${apresVals.map(v=>`<td>${v||'—'}</td>`).join('')}<td><strong>${totP}/${nc*4}</strong></td>
+      <td>${pr!=='—'?(parseFloat(pr)>=0?'+':'')+pr:'—'}</td>
+      ${r.satisfaction.map(v=>`<td>${v||'—'}</td>`).join('')}<td><strong>${totS}/20</strong></td><td>${tauxNum!==null?tauxNum+'%':'—'}</td><td>${apprec}</td>
+      <td class="l">${r.suggestions||'—'}</td></tr>`;
+  }).join('') || `<tr><td colspan="${6+nc*2+5}" style="text-align:center;padding:16px;color:#888;">Aucun participant enregistré</td></tr>`;
+  html += `</table>`;
+
+  html += printDocEnd();
+  openPrintWindow(html);
+}
+
+// --- SYNTHESE GENERALE ---
+function printSyntheseReport() {
+  const chaudForms = Object.values(chaudData).filter(d=>d.year===currentYear && d.titre);
+  const froidForms = Object.values(froidData).filter(d=>d.year===currentYear && d.titre);
+
+  const totalChaudPart = chaudForms.reduce((s,d)=>s+d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).length,0);
+  const totalFroidPart = froidForms.reduce((s,d)=>s+d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).length,0);
+  const allChaudMoys = chaudForms.flatMap(d=>d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).map(r=>calcMoy(r.notes)).filter(v=>v));
+  const allFroidSats = froidForms.flatMap(d=>d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).map(r=>calcMoy(r.satisfaction)).filter(v=>v));
+  const moyChaud = allChaudMoys.length ? allChaudMoys.reduce((s,v)=>s+v,0)/allChaudMoys.length : 0;
+  const moyFroidSat = allFroidSats.length ? allFroidSats.reduce((s,v)=>s+v,0)/allFroidSats.length : 0;
+
+  let html = printDocStart('Synthèse Générale ' + currentYear);
+  html += `<h2 class="sec">Synthèse Générale — Bilan des formations ${currentYear}</h2>`;
+  html += `<div class="kpis">
+    <div class="kpi"><div class="v">${chaudForms.length}</div><div class="l">Formations à chaud</div></div>
+    <div class="kpi"><div class="v">${totalChaudPart}</div><div class="l">Évaluations à chaud</div></div>
+    <div class="kpi"><div class="v">${froidForms.length}</div><div class="l">Formations à froid</div></div>
+    <div class="kpi"><div class="v">${totalFroidPart}</div><div class="l">Évaluations à froid</div></div>
+    <div class="kpi"><div class="v">${moyChaud?Math.round((moyChaud/4)*100)+'%':'—'}</div><div class="l">Satisfaction à chaud</div></div>
+    <div class="kpi"><div class="v">${moyFroidSat?Math.round((moyFroidSat/4)*100)+'%':'—'}</div><div class="l">Satisfaction à froid</div></div>
+  </div>`;
+
+  // Recap chaud
+  html += `<h2 class="sec">Récapitulatif — Formations à chaud</h2><table><tr>
+    <th>Réf.</th><th class="l">Titre</th><th class="l">Organisme</th><th>Date</th><th>Participants</th><th>Moyenne</th><th>Appréciation</th>
+  </tr>`;
+  html += chaudForms.map(d => {
+    const rows=d.rows.filter(r=>r.matricule&&getAgent(r.matricule));
+    const moys=rows.map(r=>calcMoy(r.notes)).filter(v=>v);
+    const mG=moys.length?moys.reduce((s,v)=>s+v,0)/moys.length:0;
+    const apprec=mG>=3.5?'Très bien':mG>=3?'Bien':mG>=2?'Moyen':'Insuffisant';
+    return `<tr><td>${d.ref||'—'}</td><td class="l">${d.titre}</td><td class="l">${d.organisme||'—'}</td><td>${d.dateDebut||'—'}</td><td>${rows.length}</td><td>${noteBadgePrint(mG)}</td><td>${apprec}</td></tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;padding:10px;color:#888;">Aucune formation</td></tr>';
+  html += `</table>`;
+
+  // Recap froid
+  html += `<h2 class="sec">Récapitulatif — Formations à froid</h2><table><tr>
+    <th>Réf.</th><th class="l">Titre</th><th class="l">Organisme</th><th>Participants</th><th>Moy.Avant</th><th>Moy.Après</th><th>Progression</th><th>Sat.</th><th>Appréciation</th>
+  </tr>`;
+  html += froidForms.map(d => {
+    const rows=d.rows.filter(r=>r.matricule&&getAgent(r.matricule));
+    const nc=d.competences.filter(c=>c.trim()).length||1;
+    const vsA=rows.map(r=>calcMoy(r.avant.slice(0,nc))).filter(v=>v);
+    const vsP=rows.map(r=>calcMoy(r.apres.slice(0,nc))).filter(v=>v);
+    const vsS=rows.map(r=>calcMoy(r.satisfaction)).filter(v=>v);
+    const mA=vsA.length?vsA.reduce((s,v)=>s+v,0)/vsA.length:0;
+    const mP=vsP.length?vsP.reduce((s,v)=>s+v,0)/vsP.length:0;
+    const mS=vsS.length?vsS.reduce((s,v)=>s+v,0)/vsS.length:0;
+    const prog=mA&&mP?mP-mA:null;
+    const apprec=mS>=3?'Très satisfait':mS>=2?'Satisfait':'Peu satisfait';
+    return `<tr><td>${d.ref||'—'}</td><td class="l">${d.titre}</td><td class="l">${d.organisme||'—'}</td><td>${rows.length}</td><td>${mA?mA.toFixed(1):'—'}</td><td>${mP?mP.toFixed(1):'—'}</td><td>${prog!==null?(prog>=0?'+':'')+prog.toFixed(2):'—'}</td><td>${mS?Math.round((mS/4)*100)+'%':'—'}</td><td>${apprec}</td></tr>`;
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:10px;color:#888;">Aucune formation</td></tr>';
+  html += `</table>`;
+
+  // Suivi individuel chaud
+  const partsC = {};
+  chaudForms.forEach(d => {
+    d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).forEach(r => {
+      const a = getAgent(r.matricule);
+      const moy = calcMoy(r.notes);
+      if(moy === null) return;
+      const mat = r.matricule.toUpperCase();
+      if(!partsC[mat]) partsC[mat] = { nom:a.nom, dir:a.dir, byForm:{}, sum:0, count:0 };
+      partsC[mat].byForm[d.ref] = moy; partsC[mat].sum += moy; partsC[mat].count++;
+    });
+  });
+  if(Object.keys(partsC).length) {
+    html += `<h2 class="sec">Suivi individuel — Évaluations à chaud</h2><table><tr><th class="l">Nom & Prénoms</th><th>Direction</th>${chaudForms.map(d=>`<th>${d.ref}</th>`).join('')}<th>Nb form.</th><th>Moy. générale</th></tr>`;
+    html += Object.values(partsC).sort((a,b)=>a.nom.localeCompare(b.nom)).map(p => {
+      const moyGen = p.count ? p.sum/p.count : 0;
+      return `<tr><td class="l">${p.nom}</td><td><span class="badge b3">${p.dir}</span></td>${chaudForms.map(d=>`<td>${p.byForm[d.ref]!==undefined?noteBadgePrint(p.byForm[d.ref]):'—'}</td>`).join('')}<td>${p.count}</td><td><strong>${noteBadgePrint(moyGen)}</strong></td></tr>`;
+    }).join('');
+    html += `</table>`;
+  }
+
+  // Suivi individuel froid
+  const partsF = {};
+  froidForms.forEach(d => {
+    const nc = d.competences.filter(c=>c.trim()).length || 1;
+    d.rows.filter(r=>r.matricule&&getAgent(r.matricule)).forEach(r => {
+      const a = getAgent(r.matricule);
+      const mA = calcMoy(r.avant.slice(0,nc)); const mP = calcMoy(r.apres.slice(0,nc));
+      if(mA===null && mP===null) return;
+      const prog = (mA!==null&&mP!==null)?(mP-mA):null;
+      const mat = r.matricule.toUpperCase();
+      if(!partsF[mat]) partsF[mat] = { nom:a.nom, dir:a.dir, byForm:{}, sum:0, count:0 };
+      partsF[mat].byForm[d.ref] = prog;
+      if(prog!==null) { partsF[mat].sum += prog; partsF[mat].count++; }
+    });
+  });
+  if(Object.keys(partsF).length) {
+    html += `<h2 class="sec">Suivi individuel — Progression à froid</h2><table><tr><th class="l">Nom & Prénoms</th><th>Direction</th>${froidForms.map(d=>`<th>${d.ref}</th>`).join('')}<th>Nb form.</th><th>Progr. générale</th></tr>`;
+    html += Object.values(partsF).sort((a,b)=>a.nom.localeCompare(b.nom)).map(p => {
+      const progGen = p.count ? p.sum/p.count : null;
+      return `<tr><td class="l">${p.nom}</td><td><span class="badge b3">${p.dir}</span></td>${froidForms.map(d=>{
+        const v=p.byForm[d.ref];
+        return `<td>${v===undefined?'—':(v===null?'—':(v>=0?'+':'')+v.toFixed(2))}</td>`;
+      }).join('')}<td>${p.count}</td><td><strong>${progGen!==null?(progGen>=0?'+':'')+progGen.toFixed(2):'—'}</strong></td></tr>`;
+    }).join('');
+    html += `</table>`;
+  }
+
+  html += printDocEnd();
+  openPrintWindow(html);
+}
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function calcMoy(arr) {
+  if(!arr) return null;
+  const vals = arr.filter(v=>v!==null&&v!==undefined&&v!=='');
+  if(!vals.length) return null;
+  return vals.reduce((s,v)=>s+parseFloat(v),0)/vals.length;
+}
+function noteBadge(v) {
+  if(v === null || v === undefined || v === '') return '<span class="note-badge note-0">—</span>';
+  const n = parseFloat(v);
+  const cls = n >= 3.5 ? 'note-4' : n >= 2.5 ? 'note-3' : n >= 1.5 ? 'note-2' : 'note-1';
+  return `<span class="note-badge ${cls}">${n.toFixed(2)}</span>`;
+}
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(()=>{ t.className='toast'; }, 3000);
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+loadAgentsCustom();
+initYearSelect();
+loadStorage();
+initChaud();
+initFroid();
+updateHomeStats();
+</script>
+</body>
+</html>
